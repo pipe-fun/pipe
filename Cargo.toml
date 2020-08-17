@@ -1,0 +1,44 @@
+[package]
+name = "pipe"
+version = "0.1.0"
+authors = ["Spxg <itsme@unsafe.me>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+chrono = { version = "0.4", features = ["serde"] }
+dotenv_codegen = "0.15"
+lazy_static = "1.4"
+log = "0.4"
+parking_lot = "0.10"
+pulldown-cmark = "0.6"
+serde = "1.0"
+serde_json = "1.0"
+thiserror = "1"
+yew = "0.17"
+yew-router = { version="0.14", features = ["web_sys"] }
+wasm-bindgen = "0.2"
+wasm-logger = "0.2"
+wee_alloc = "0.4"
+
+[dependencies.status-protoc]
+version = "0.1"
+path = "../status-protoc"
+
+[dependencies.web-sys]
+version = "0.3"
+features = [
+    "Document",
+    "Element",
+    "Node",
+    "Window",
+    "HtmlCollection",
+]
+
+[dev-dependencies]
+js-sys = "0.3"
+wasm-bindgen-futures = "0.4"
+wasm-bindgen-test = "0.3"

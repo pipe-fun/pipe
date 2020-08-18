@@ -1,10 +1,8 @@
-use dotenv_codegen::dotenv;
 use log::debug;
 use serde::{Deserialize, Serialize};
 use yew::callback::Callback;
 use yew::format::{Json, Nothing, Text};
 use yew::services::fetch::{FetchService, FetchTask, Request, Response, FetchOptions, Credentials};
-use yew::services::storage::{Area, StorageService};
 
 use crate::error::Error;
 use crate::types::ErrorInfo;
@@ -65,7 +63,7 @@ impl Requests {
         };
 
         let url = format!("{}{}", API_ROOT, url);
-        let mut builder = Request::builder()
+        let builder = Request::builder()
             .method(method)
             .uri(url.as_str())
             .header("Content-Type", "application/json");
@@ -79,7 +77,7 @@ impl Requests {
     }
 
     /// Delete request
-    pub fn delete<T>(&mut self, url: String, callback: Callback<Result<T, Error>>) -> FetchTask
+    pub fn _delete<T>(&mut self, url: String, callback: Callback<Result<T, Error>>) -> FetchTask
     where
         for<'de> T: Deserialize<'de> + 'static + std::fmt::Debug,
     {
@@ -110,7 +108,7 @@ impl Requests {
     }
 
     /// Put request with a body
-    pub fn put<B, T>(
+    pub fn _put<B, T>(
         &mut self,
         url: String,
         body: B,
@@ -126,7 +124,7 @@ impl Requests {
 }
 
 /// Set limit for pagination
-pub fn limit(count: u32, p: u32) -> String {
+pub fn _limit(count: u32, p: u32) -> String {
     let offset = if p > 0 { p * count } else { 0 };
     format!("limit={}&offset={}", count, offset)
 }

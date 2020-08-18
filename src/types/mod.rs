@@ -8,5 +8,3 @@ pub mod auth;
 pub struct ErrorInfo {
     pub errors: HashMap<String, Vec<String>>,
 }
-
-pub type DeleteWrapper = HashMap<(), ()>;

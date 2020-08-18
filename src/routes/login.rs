@@ -1,12 +1,15 @@
 use crate::types::auth::LoginInfo;
 use yew::{ComponentLink, Component, Html};
-use yew::format::Json;
-use wasm_bindgen::prelude::*;
 use yew::prelude::*;
 use yew::services::fetch::FetchTask;
 use status_protoc::status::user::login::LoginStatus;
 use crate::error::Error;
 use crate::services::auth::Auth;
+use status_protoc::my_trait::StatusTrait;
+use yew_router::agent::RouteAgent;
+use yew_router::agent::RouteRequest::ChangeRoute;
+use crate::routes::AppRoute;
+use crate::components::footer::Footer;
 
 pub struct Login {
     auth: Auth,
@@ -15,8 +18,9 @@ pub struct Login {
     response: Callback<Result<LoginStatus, Error>>,
     task: Option<FetchTask>,
     props: Props,
+    router_agent: Box<dyn Bridge<RouteAgent>>,
+    test: Callback<Result<String, Error>>,
     link: ComponentLink<Self>,
-    test: String
 }
 
 pub enum Msg {
@@ -25,6 +29,8 @@ pub enum Msg {
     Ignore,
     UpdateUserName(String),
     UpdatePassword(String),
+    Test,
+    Auth(Result<String, Error>),
 }
 
 #[derive(PartialEq, Properties, Clone, Default)]
@@ -45,8 +51,9 @@ impl Component for Login {
             response: link.callback(Msg::Response),
             task: None,
             props,
+            router_agent: RouteAgent::bridge(link.callback(|_| Msg::Ignore)),
+            test: link.callback(Msg::Auth),
             link,
-            test: String::default()
         }
     }
 
@@ -55,36 +62,39 @@ impl Component for Login {
             Msg::Request => {
                 let request = self.request.clone();
                 self.task = Some(self.auth.login(request, self.response.clone()))
-            },
+            }
             Msg::Response(Ok(response)) => {
-                self.test = serde_json::to_string_pretty(&response).unwrap();
-
-                self.props.callback.emit(response);
                 self.error = None;
                 self.task = None;
-                // Route to home page after logged in
-                // self.router_agent.send(ChangeRoute(AppRoute::Home.into()));
-            },
+                if response.status_code() == 0 {
+                    self.props.callback.emit(response);
+                    self.router_agent.send(ChangeRoute(AppRoute::Console.into()));
+                }
+            }
             Msg::Response(Err(err)) => {
                 self.error = Some(err);
                 self.task = None;
-            },
+            }
             Msg::UpdateUserName(value) => self.request.user_name = value,
             Msg::UpdatePassword(value) => self.request.user_password = value,
+            Msg::Test => self.task = Some(self.auth.authorized(self.test.clone())),
+            Msg::Auth(_) => {}
             Msg::Ignore => {}
         }
         true
     }
 
-    fn change(&mut self, _props: Self::Properties) -> bool {
-        unimplemented!()
+    fn change(&mut self, props: Self::Properties) -> bool {
+        self.props = props;
+        true
     }
 
     fn view(&self) -> Html {
         let onsubmit = self.link.callback(|ev: FocusEvent| {
-            ev.prevent_default(); /* Prevent event propagation */
+            ev.prevent_default();
             Msg::Request
         });
+
         let oninput_name = self
             .link
             .callback(|ev: InputData| Msg::UpdateUserName(ev.value));
@@ -93,44 +103,41 @@ impl Component for Login {
             .callback(|ev: InputData| Msg::UpdatePassword(ev.value));
 
         html! {
-         <div class="auth-page">
-                <div class="container page">
-                    <div class="row">
-                        <div class="col-md-6 offset-md-3 col-xs-12">
-                            <h1 class="text-xs-center">{ "Sign In" }</h1>
-                            <form onsubmit=onsubmit>
-                                <fieldset>
-                                    <fieldset class="form-group">
-                                        <input
-                                            class="form-control form-control-lg"
-                                            type="name"
-                                            placeholder="Name"
-                                            value=&self.request.user_name
-                                            oninput=oninput_name
-                                            />
-                                    </fieldset>
-                                    <fieldset class="form-group">
-                                        <input
-                                            class="form-control form-control-lg"
-                                            type="password"
-                                            placeholder="Password"
-                                            value=&self.request.user_password
-                                            oninput=oninput_password
-                                            />
-                                    </fieldset>
-                                    <button
-                                        class="btn btn-lg btn-primary pull-xs-right"
-                                        type="submit"
-                                        disabled=false>
-                                        { "Sign in" }
-                                    </button>
-                                </fieldset>
-                            </form>
-                            <p> { self.test.clone() } </p>
+            <>
+                <div class="container">
+                    <form onsubmit=onsubmit>
+                        <h1>{ "Pipe" }<sup>{ "alpha" }</sup></h1>
+
+                        <div class="form-group ">
+                            <label class="control-label" for="email">{ "用户名" }</label>
+                            <input type="name" class="form-control"
+                            name="name"
+                            id="name"
+                            placeholder="请输入 用户名"
+                            value=&self.request.user_name oninput=oninput_name
+                            />
                         </div>
-                    </div>
+
+                        <div class="form-group ">
+                            <label for="password">{ "密码" }</label>
+                            <input type="password" class="form-control"
+                            name="password"
+                            id="password"
+                            placeholder="请输入 密码"
+                            value=&self.request.user_password oninput=oninput_password
+                            />
+                        </div>
+
+                        <div class="text-right">
+                            <p><a href="/password_reset">{ "忘记密码?" }</a></p>
+                            <button type="submit" class="btn btn-default">{ "登录" }</button>
+                            <button type="submit" class="btn btn-default">{ "注册" }</button>
+                        </div>
+                        <button type="button" class="btn btn-default" onclick=self.link.callback(|_| Msg::Test)>{ "测试" }</button>
+                    </form>
                 </div>
-            </div>
+                <Footer />
+            </>
         }
     }
 }

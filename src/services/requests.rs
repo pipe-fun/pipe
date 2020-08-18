@@ -3,13 +3,13 @@ use log::debug;
 use serde::{Deserialize, Serialize};
 use yew::callback::Callback;
 use yew::format::{Json, Nothing, Text};
-use yew::services::fetch::{FetchService, FetchTask, Request, Response};
+use yew::services::fetch::{FetchService, FetchTask, Request, Response, FetchOptions, Credentials};
 use yew::services::storage::{Area, StorageService};
 
 use crate::error::Error;
 use crate::types::ErrorInfo;
 
-const API_ROOT: &str = "http://localhost:8888";
+const API_ROOT: &str = "http://127.0.0.1:8888";
 
 /// Http request
 #[derive(Default, Debug)]
@@ -73,7 +73,9 @@ impl Requests {
         let request = builder.body(body).unwrap();
         debug!("Request: {:?}", request);
 
-        FetchService::fetch(request, handler.into()).unwrap()
+        let mut options = FetchOptions::default();
+        options.credentials = Some(Credentials::Include);
+        FetchService::fetch_with_options(request, options, handler.into()).unwrap()
     }
 
     /// Delete request

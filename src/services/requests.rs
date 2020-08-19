@@ -11,12 +11,10 @@ const API_ROOT: &str = "http://127.0.0.1:8888";
 
 /// Http request
 #[derive(Default, Debug)]
-pub struct Requests {}
+pub struct Requests;
 
 impl Requests {
-    pub fn new() -> Self {
-        Self {}
-    }
+    pub fn new() -> Self { Self }
 
     /// build all kinds of http request: post/get/delete etc.
     pub fn builder<B, T>(

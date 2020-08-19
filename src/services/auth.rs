@@ -4,7 +4,7 @@ use status_protoc::status::user::login::LoginStatus;
 
 use crate::error::Error;
 use crate::services::requests::Requests;
-use crate::types::auth::LoginInfo;
+use crate::types::auth::{LoginInfo, UserInfo};
 
 /// Apis for authentication
 #[derive(Default, Debug)]
@@ -45,11 +45,11 @@ impl Auth {
     //     )
     // }
 
-    pub fn authorized(
+    pub fn authorize(
         &mut self,
-        callback: Callback<Result<String, Error>>,
+        callback: Callback<Result<UserInfo, Error>>,
     ) -> FetchTask {
-        self.requests.get::<String>(
+        self.requests.get::<UserInfo>(
             "/user/auth".to_string(),
             callback,
         )

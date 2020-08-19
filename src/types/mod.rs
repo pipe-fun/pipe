@@ -1,7 +1,8 @@
-use std::collections::HashMap;
-use serde::{Deserialize, Serialize};
-
 pub mod auth;
+pub mod device;
+pub mod task;
+
+use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]

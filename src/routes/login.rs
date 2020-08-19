@@ -1,15 +1,15 @@
-use crate::types::auth::LoginInfo;
 use yew::{ComponentLink, Component, Html};
 use yew::prelude::*;
 use yew::services::fetch::FetchTask;
 use status_protoc::status::user::login::LoginStatus;
-use crate::error::Error;
-use crate::services::auth::Auth;
 use status_protoc::my_trait::StatusTrait;
 use yew_router::agent::RouteAgent;
 use yew_router::agent::RouteRequest::ChangeRoute;
+use crate::error::Error;
+use crate::services::auth::Auth;
 use crate::routes::AppRoute;
 use crate::components::footer::Footer;
+use crate::types::auth::{LoginInfo, UserInfo};
 
 pub struct Login {
     auth: Auth,
@@ -19,7 +19,7 @@ pub struct Login {
     task: Option<FetchTask>,
     props: Props,
     router_agent: Box<dyn Bridge<RouteAgent>>,
-    test: Callback<Result<String, Error>>,
+    test: Callback<Result<UserInfo, Error>>,
     link: ComponentLink<Self>,
 }
 
@@ -30,13 +30,13 @@ pub enum Msg {
     UpdateUserName(String),
     UpdatePassword(String),
     Test,
-    Auth(Result<String, Error>),
+    Auth(Result<UserInfo, Error>),
 }
 
 #[derive(PartialEq, Properties, Clone, Default)]
 pub struct Props {
     /// Callback when user is logged in successfully
-    pub callback: Callback<LoginStatus>,
+    pub callback: Callback<UserInfo>,
 }
 
 impl Component for Login {
@@ -67,7 +67,8 @@ impl Component for Login {
                 self.error = None;
                 self.task = None;
                 if response.status_code() == 0 {
-                    self.props.callback.emit(response);
+                    let info = UserInfo::new(&response.get_user_name());
+                    self.props.callback.emit(info);
                     self.router_agent.send(ChangeRoute(AppRoute::Console.into()));
                 }
             }
@@ -77,7 +78,7 @@ impl Component for Login {
             }
             Msg::UpdateUserName(value) => self.request.user_name = value,
             Msg::UpdatePassword(value) => self.request.user_password = value,
-            Msg::Test => self.task = Some(self.auth.authorized(self.test.clone())),
+            Msg::Test => self.task = Some(self.auth.authorize(self.test.clone())),
             Msg::Auth(_) => {}
             Msg::Ignore => {}
         }
@@ -104,6 +105,7 @@ impl Component for Login {
 
         html! {
             <>
+                <link href="register.css" rel="stylesheet" type="text/css"/>
                 <div class="container">
                     <form onsubmit=onsubmit>
                         <h1>{ "Pipe" }<sup>{ "alpha" }</sup></h1>

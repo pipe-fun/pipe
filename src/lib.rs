@@ -1,8 +1,12 @@
-#![recursion_limit="256"]
-use yew::App;
-use wasm_bindgen::prelude::*;
-use crate::routes::login::Login;
+#![recursion_limit="512"]
 
+#[macro_use]
+extern crate serde_derive;
+
+use wasm_bindgen::prelude::*;
+use app::App;
+
+mod app;
 mod routes;
 mod types;
 mod services;
@@ -11,5 +15,6 @@ mod components;
 
 #[wasm_bindgen(start)]
 pub fn run_app() {
-    App::<Login>::new().mount_to_body();
+    wasm_logger::init(wasm_logger::Config::default());
+    yew::start_app::<App>();
 }

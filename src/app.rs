@@ -4,12 +4,19 @@ use yew::services::fetch::FetchTask;
 use yew::{agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html, ShouldRender};
 use yew_router::prelude::*;
 use crate::error::Error;
-use crate::routes::{console::view::Console, login::Login, AppRoute, fix_fragment_routes};
+use crate::routes::{
+    console::view::Console,
+    console::task::edit::TaskEdit,
+    login::Login,
+    AppRoute,
+    fix_fragment_routes
+};
 
 use crate::services::auth::Auth;
 use log::debug;
 use crate::types::auth::UserInfo;
 use yew_router::agent::RouteRequest::ChangeRoute;
+use crate::types::task::Task;
 
 /// The root app component
 pub struct App {

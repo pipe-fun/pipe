@@ -75,7 +75,7 @@ impl Requests {
     }
 
     /// Delete request
-    pub fn _delete<T>(&mut self, url: String, callback: Callback<Result<T, Error>>) -> FetchTask
+    pub fn delete<T>(&mut self, url: String, callback: Callback<Result<T, Error>>) -> FetchTask
     where
         for<'de> T: Deserialize<'de> + 'static + std::fmt::Debug,
     {

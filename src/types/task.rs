@@ -20,7 +20,7 @@ pub struct Task {
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct NewTask {
-    name: String,
+    pub name: String,
     succeed_count: i32,
     failed_count: i32,
     last_executed: NaiveDateTime,
@@ -28,7 +28,7 @@ pub struct NewTask {
     command: String,
     execute_time: NaiveTime,
     device_token: String,
-    active: bool,
+    pub active: bool,
 }
 
 impl Default for Task {
@@ -48,18 +48,12 @@ impl Default for Task {
     }
 }
 impl NewTask {
-    pub fn edit_name(self, name: &str) -> Self {
-        Self {
-            name: name.into(),
-            ..self
-        }
+    pub fn edit_name(&mut self, name: &str) {
+        self.name = name.into();
     }
 
-    pub fn edit_active(self, active: bool) -> Self {
-        Self {
-            active,
-            ..self
-        }
+    pub fn edit_active(&mut self, active: bool) {
+        self.active = active;
     }
 
     pub fn from(task: &Task) -> Self {

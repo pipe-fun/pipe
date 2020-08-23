@@ -44,6 +44,7 @@ impl Component for TaskView {
     fn update(&mut self, msg: Self::Message) -> bool {
         match msg {
             Msg::Response(Ok(ts)) => {
+                unShow();
                 deleteBackDrop();
                 self.this_task = None;
                 self.tasks = ts;
@@ -87,7 +88,7 @@ impl Component for TaskView {
                     <td>{ t.succeed_count }</td>
                     <td>{ t.failed_count }</td>
                     <td>{ t.last_executed }</td>
-                    <td>{ "正常" }</td>
+                    <td>{ if t.active { "激活" } else { "禁用" } }</td>
                     <td>{ "10 小时后" }</td>
 
                     <td>
@@ -144,5 +145,6 @@ impl Component for TaskView {
 extern "C" {
     fn addEditEvent();
     fn show();
+    fn unShow();
     fn deleteBackDrop();
 }

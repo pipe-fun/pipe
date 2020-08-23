@@ -106,7 +106,7 @@ impl Requests {
     }
 
     /// Put request with a body
-    pub fn _put<B, T>(
+    pub fn put<B, T>(
         &mut self,
         url: String,
         body: B,

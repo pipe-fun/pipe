@@ -1,7 +1,7 @@
 use crate::services::requests::Requests;
 use crate::error::Error;
 use yew::Callback;
-use crate::types::task::Task;
+use crate::types::task::{Task, NewTask};
 use yew::services::fetch::FetchTask;
 use status_protoc::status::console::task::TaskStatus;
 
@@ -45,6 +45,19 @@ impl TaskRequest {
     ) -> FetchTask {
         self.requests.delete::<TaskStatus>(
             format!("/console/task/delete/{}", id),
+            callback,
+        )
+    }
+
+    pub fn put(
+        &mut self,
+        id: i32,
+        info: NewTask,
+        callback: Callback<Result<TaskStatus, Error>>,
+    ) -> FetchTask {
+        self.requests.put::<NewTask, TaskStatus>(
+            format!("/console/task/update/{}", id),
+            info,
             callback,
         )
     }

@@ -15,6 +15,11 @@ function addEditEvent() {
     )
 }
 
+function unShow() {
+    let edit = document.getElementById("modal_load");
+    edit.click();
+}
+
 function show() {
     let edit = document.getElementById("modal_load");
     addBackDrop();

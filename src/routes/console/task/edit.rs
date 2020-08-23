@@ -6,6 +6,7 @@ use status_protoc::status::console::task::TaskStatus;
 use yew::prelude::*;
 use yew::services::fetch::FetchTask;
 use log::debug;
+use std::str::FromStr;
 
 pub struct TaskEdit {
     tr: TaskRequest,
@@ -23,6 +24,8 @@ pub enum Msg {
     UpdateRequest,
     Response(Result<TaskStatus, Error>),
     ReadResponse(Result<Vec<Task>, Error>),
+    UpdateTaskName(String),
+    UpdateActive(ChangeData),
 }
 
 #[derive(Properties, Clone)]
@@ -58,8 +61,19 @@ impl Component for TaskEdit {
             Msg::ReadResponse(ts) => self.props.callback.emit(ts),
             Msg::DeleteRequest => {
                 self.task = Some(self.tr.delete(self.props.task.id, self.response.clone()));
-            }
-            Msg::UpdateRequest => {}
+            },
+            Msg::UpdateRequest => {
+                self.task = Some(self.tr.put(self.props.task.id
+                                             , self.request.clone()
+                                             , self.response.clone()));
+            },
+            Msg::UpdateTaskName(n) => self.request.edit_name(&n),
+            Msg::UpdateActive(select) => {
+                if let ChangeData::Select(select) = select {
+                    debug!("{:?}", select);
+                    self.request.edit_active(bool::from_str(&select.value()).unwrap())
+                }
+            },
         }
         true
     }
@@ -71,29 +85,42 @@ impl Component for TaskEdit {
 
     fn view(&self) -> Html {
         let delete = self.link.callback(|_| Msg::DeleteRequest);
+        let onsubmit = self.link.callback(|_| Msg::UpdateRequest);
+        let oninput_name = self
+            .link
+            .callback(|ev: InputData| Msg::UpdateTaskName(ev.value));
+        let onchange_active = self
+            .link
+            .callback(|ev: ChangeData| Msg::UpdateActive(ev));
+
         html! {
             <div class="modal-dialog">
-                <div id="edit" class="modal-content">
+                <div id="edit" class="modal-content" onsubmit=onsubmit>
                     <form>
                         <h1 class="text-center">{ "Pipe" }<sup>{ "alpha" }</sup></h1>
                         <div id="run-result"></div>
                         <div class="form-group">
-                            <label class="control-label">
-                              <a id="siteurl" href="" target="_blank" style="color:black;">{ "任务名" }</a>
-                            </label>
-                            <input type="text" class="form-control" name="cookie" placeholder="请输入 cookie"/>
+                            <label class="control-label"><span>{ "任务名" }</span></label>
+                            <input type="text" class="form-control" placeholder="请输入 任务名"
+                            value=&self.request.name
+                            oninput=oninput_name
+                            />
                         </div>
 
                         <div id="variables">
                             <div class="form-group">
-                                <label class="control-label" for="input-cookie"><span>{ "激活" }</span></label>
-                                <input type="text" class="form-control" name="cookie" placeholder="请输入 cookie"/>
+                                <label class="control-label"><span>{ "状态" }</span></label>
+                                <select class="form-control" onchange=onchange_active>
+                                    <option value=&self.request.active>{ "不修改" }</option>
+                                    <option value="true">{ "激活" }</option>
+                                    <option value="false">{ "禁用" }</option>
+                                 </select>
                             </div>
                         </div>
 
                        <div class="text-right">
-                            <a class="btn btn-default" onclick=delete data-confirm="是否要删除任务?">{ "删除" }</a>
-                            <button type="submit" data-loading-text="loading..." class="btn btn-primary">{ "提交" }</button>
+                            <a class="btn btn-default" onclick=delete>{ "删除" }</a>
+                            <button type="submit" class="btn btn-primary">{ "提交" }</button>
                        </div>
                     </form>
                 </div>

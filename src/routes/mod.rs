@@ -1,9 +1,7 @@
 pub mod login;
 pub mod console;
-use log::debug;
 
 use yew_router::prelude::*;
-use crate::types::task::Task;
 
 /// App routes
 #[derive(Switch, Debug, Clone)]

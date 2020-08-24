@@ -28,7 +28,6 @@ pub enum Msg {
     Ignore,
     UpdateUserName(String),
     UpdatePassword(String),
-    Auth(Result<UserInfo, Error>),
 }
 
 #[derive(PartialEq, Properties, Clone, Default)]
@@ -75,7 +74,6 @@ impl Component for Login {
             }
             Msg::UpdateUserName(value) => self.request.user_name = value,
             Msg::UpdatePassword(value) => self.request.user_password = value,
-            Msg::Auth(_) => {}
             Msg::Ignore => {}
         }
         true

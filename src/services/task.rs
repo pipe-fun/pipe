@@ -27,7 +27,7 @@ impl TaskRequest {
         )
     }
 
-    pub fn read_by_id(
+    pub fn _read_by_id(
         &mut self,
         id: i32,
         callback: Callback<Result<Task, Error>>,

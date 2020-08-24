@@ -1,9 +1,9 @@
 use crate::services::requests::Requests;
 use crate::error::Error;
 use yew::Callback;
-use crate::types::task::Task;
 use yew::services::fetch::FetchTask;
-use crate::types::device::Device;
+use crate::types::device::{Device, NewDevice};
+use status_protoc::status::console::device::DeviceStatus;
 
 #[derive(Default, Debug)]
 pub struct DeviceRequest {
@@ -23,6 +23,41 @@ impl DeviceRequest {
     ) -> FetchTask {
         self.requests.get::<Vec<Device>>(
             "/console/device/read".to_string(),
+            callback,
+        )
+    }
+
+    pub fn delete(
+        &mut self,
+        token: &str,
+        callback: Callback<Result<DeviceStatus, Error>>,
+    ) -> FetchTask {
+        self.requests.delete::<DeviceStatus>(
+            format!("/console/device/delete/{}", token),
+            callback,
+        )
+    }
+
+    pub fn update(
+        &mut self,
+        info: Device,
+        callback: Callback<Result<DeviceStatus, Error>>,
+    ) -> FetchTask {
+        self.requests.put::<Device, DeviceStatus>(
+            format!("/console/device/update"),
+            info,
+            callback,
+        )
+    }
+
+    pub fn create(
+        &mut self,
+        info: NewDevice,
+        callback: Callback<Result<DeviceStatus, Error>>,
+    ) -> FetchTask {
+        self.requests.post::<NewDevice, DeviceStatus>(
+            format!("/console/device/create"),
+            info,
             callback,
         )
     }

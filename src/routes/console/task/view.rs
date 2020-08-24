@@ -1,32 +1,24 @@
 use crate::services::task::TaskRequest;
 use crate::error::Error;
-use crate::types::task::{NewTask, Task};
+use crate::types::task::Task;
 use yew::{Callback, Component, ComponentLink, Html};
-use status_protoc::status::console::task::TaskStatus;
 use yew::prelude::*;
 use yew::services::fetch::FetchTask;
-use log::debug;
 use super::{
     edit::TaskEdit,
     new::CreateTask,
 };
 
-use wasm_bindgen::{closure::Closure, prelude::wasm_bindgen, JsValue};
-
-#[derive(Clone)]
-pub enum Route {
-    None,
-    Edit(Task),
-    New,
-}
+use crate::routes::console::from_js::{unShow, deleteBackDrop, show};
+use crate::routes::console::view::Route;
 
 pub struct TaskView {
     tr: TaskRequest,
-    error: Option<Error>,
     response: Callback<Result<Vec<Task>, Error>>,
     task: Option<FetchTask>,
     tasks: Vec<Task>,
     route: Route,
+    props: Props,
     link: ComponentLink<Self>,
 }
 
@@ -37,18 +29,23 @@ pub enum Msg {
     New,
 }
 
+#[derive(Properties, Clone)]
+pub struct Props {
+    pub callback: Callback<Route>,
+}
+
 impl Component for TaskView {
     type Message = Msg;
-    type Properties = ();
+    type Properties = Props;
 
-    fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         Self {
             tr: TaskRequest::new(),
-            error: None,
             response: link.callback(Msg::Response),
             task: None,
             tasks: vec![],
             route: Route::None,
+            props,
             link,
         }
     }
@@ -60,21 +57,28 @@ impl Component for TaskView {
                 deleteBackDrop();
                 self.tasks = ts;
                 self.route = Route::None;
-            },
+            }
             Msg::Edit(t) => {
-                self.route = Route::Edit(t);
+                let callback = self.link.callback(Msg::Response);
+                let html = html! { <TaskEdit task=t callback=callback.clone() /> };
+                self.props.callback.emit(Route::Edit(html));
                 show();
-            },
+            }
             Msg::New => {
-                self.route = Route::New;
+                let callback = self.link.callback(Msg::Response);
+                let html = html! { <CreateTask callback=callback.clone() /> };
+                self.props.callback.emit(Route::New(html));
                 show();
-            },
+            }
             _ => ()
         }
         true
     }
 
-    fn change(&mut self, _props: Self::Properties) -> bool { false }
+    fn change(&mut self, props: Self::Properties) -> bool {
+        self.props = props;
+        true
+    }
 
     fn rendered(&mut self, first_render: bool) {
         if first_render {
@@ -82,19 +86,10 @@ impl Component for TaskView {
                 self.tr
                     .read(self.response.clone()),
             );
-            addEditEvent();
         }
     }
 
     fn view(&self) -> Html {
-        let callback = self.link.callback(Msg::Response);
-
-        let route = match &self.route {
-            Route::None => html! {},
-            Route::New => html! { <CreateTask callback=callback.clone() /> },
-            Route::Edit(t) => html! { <TaskEdit task=t callback=callback.clone() /> },
-        };
-
         let tbody = self.tasks.iter().map(|t| {
             let t_c = t.clone();
             html! {
@@ -113,7 +108,7 @@ impl Component for TaskView {
 
                     <td>
                         <a class="modal_load" onclick=self.link.callback(move |_| Msg::Edit(t_c.clone()))>
-                        { "修改 " }</a>
+                        { "编辑 " }</a>
                         <a class="modal_load">{ "立即执行" }</a>
                     </td>
                 </tr>
@@ -121,49 +116,30 @@ impl Component for TaskView {
         }).collect::<Html>();
 
         html! {
-            <>
-                <div class="modal fade" id="modal_load"
-                tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                        { route }
-                        </div>
-                    </div>
+            <section class="task">
+                <div class="container">
+                    <h2>
+                    { "我的任务 " }
+                    <a onclick=self.link.callback(|_| Msg::New) class="btn btn-default btn-xs modal_load glyphicon glyphicon-plus"></a>
+                    </h2>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>{ "任务" }</th>
+                                <th>{ "成功执行次数" }</th>
+                                <th>{ "失败次数" }</th>
+                                <th>{ "上次成功时间" }</th>
+                                <th>{ "状态" }</th>
+                                <th>{ "预计下次执行时间" }</th>
+                                <th>{ "操作" }</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            { tbody }
+                        </tbody>
+                    </table>
                 </div>
-
-                <section class="task">
-                    <div class="container">
-                        <h2>
-                        { "我的任务 " }
-                        <a onclick=self.link.callback(|_| Msg::New) class="btn btn-default btn-xs modal_load glyphicon glyphicon-plus"></a>
-                        </h2>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>{ "任务" }</th>
-                                    <th>{ "成功执行次数" }</th>
-                                    <th>{ "失败次数" }</th>
-                                    <th>{ "上次成功时间" }</th>
-                                    <th>{ "状态" }</th>
-                                    <th>{ "预计下次执行时间" }</th>
-                                    <th>{ "操作" }</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                { tbody }
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-            </>
+            </section>
         }
     }
-}
-
-#[wasm_bindgen]
-extern "C" {
-    fn addEditEvent();
-    fn show();
-    fn unShow();
-    fn deleteBackDrop();
 }

@@ -1,8 +1,4 @@
 use chrono::{NaiveDateTime, NaiveTime, NaiveDate};
-use yew::Html;
-use yew::prelude::*;
-use crate::routes::console::task::edit::TaskEdit;
-use crate::error::Error;
 use std::str::FromStr;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -85,31 +81,6 @@ impl NewTask {
             execute_time: task.execute_time,
             device_token: task.device_token.clone(),
             active: task.active,
-        }
-    }
-}
-
-impl Task {
-    pub fn get_view(&self) -> Html {
-        html! {
-            <tr>
-                <td>
-                    <span data-toggle="popover"
-                    title={ self.id }
-                    data-content={ self.name.clone() }>{ self.name.clone() }</span>
-                </td>
-
-                <td>{ self.succeed_count }</td>
-                <td>{ self.failed_count }</td>
-                <td>{ self.last_executed }</td>
-                <td>{ "正常" }</td>
-                <td>{ "10 小时后" }</td>
-
-                <td>
-                    <a class="modal_load">{ "修改 " }</a>
-                    <a class="modal_load">{ "立即执行" }</a>
-                </td>
-            </tr>
         }
     }
 }

@@ -5,7 +5,6 @@ use yew::{Callback, Component, ComponentLink, Html};
 use status_protoc::status::console::task::TaskStatus;
 use yew::prelude::*;
 use yew::services::fetch::FetchTask;
-use log::debug;
 use std::str::FromStr;
 use crate::types::device::Device;
 use crate::services::device::DeviceRequest;

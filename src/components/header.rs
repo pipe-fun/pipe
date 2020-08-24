@@ -1,9 +1,14 @@
+use yew::{
+    html,
+    Component,
+    ComponentLink,
+    Html
+};
+
 use yew_router::prelude::*;
-use yew::{html, Component, ComponentLink, Html};
 use crate::routes::AppRoute;
 
 pub struct Header;
-
 pub enum Msg {}
 
 impl Component for Header {

@@ -1,9 +1,15 @@
 //! The root app contains initial authentication and url routes
+use yew::{
+    agent::Bridged,
+    html,
+    Bridge,
+    Callback,
+    Component,
+    ComponentLink,
+    Html,
+    ShouldRender
+};
 
-use yew::services::fetch::FetchTask;
-use yew::{agent::Bridged, html, Bridge, Callback, Component, ComponentLink, Html, ShouldRender};
-use yew_router::prelude::*;
-use crate::error::Error;
 use crate::routes::{
     console::view::Console,
     login::Login,
@@ -11,10 +17,13 @@ use crate::routes::{
     fix_fragment_routes
 };
 
-use crate::services::auth::Auth;
-use log::debug;
-use crate::types::auth::UserInfo;
+use yew::services::fetch::FetchTask;
+use yew_router::prelude::*;
 use yew_router::agent::RouteRequest::ChangeRoute;
+use log::debug;
+use crate::services::auth::Auth;
+use crate::types::auth::UserInfo;
+use crate::error::Error;
 
 /// The root app component
 pub struct App {

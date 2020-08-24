@@ -1,6 +1,6 @@
-#[derive(Serialize, Deserialize, Default, Debug)]
+#[derive(Serialize, Deserialize, Default, Clone, Debug)]
 pub struct NewDevice {
-    name: String,
+    pub name: String,
     owner: String,
 }
 
@@ -9,6 +9,12 @@ pub struct Device {
     pub token: String,
     pub name: String,
     pub owner: String,
+}
+
+impl NewDevice {
+    pub fn edit_name(&mut self, name: &str) {
+        self.name = name.into();
+    }
 }
 
 impl Device {

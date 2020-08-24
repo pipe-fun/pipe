@@ -1,7 +1,11 @@
-use yew::{html, Component, ComponentLink, Html};
+use yew::{
+    html,
+    Component,
+    ComponentLink,
+    Html
+};
 
 pub struct Footer;
-
 pub enum Msg {}
 
 impl Component for Footer {

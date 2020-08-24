@@ -1,16 +1,26 @@
-use crate::services::device::DeviceRequest;
-use crate::error::Error;
-use yew::{Callback, Component, ComponentLink, Html};
-use yew::prelude::*;
-use yew::services::fetch::FetchTask;
-use crate::types::device::Device;
-use crate::routes::console::from_js::{unShow, deleteBackDrop, show};
-use log::debug;
+use yew::{Callback,
+          Component,
+          ComponentLink,
+          Html
+};
 
 use super::{
     edit::DeviceEdit,
+    new::CreateDevice,
 };
+
+use crate::routes::console::from_js::{
+    unShow,
+    deleteBackDrop,
+    show
+};
+
+use yew::prelude::*;
+use yew::services::fetch::FetchTask;
+use crate::types::device::Device;
 use crate::routes::console::view::Route;
+use crate::services::device::DeviceRequest;
+use crate::error::Error;
 
 pub struct DeviceView {
     dr: DeviceRequest,
@@ -23,7 +33,6 @@ pub struct DeviceView {
 }
 
 pub enum Msg {
-    Request,
     Response(Result<Vec<Device>, Error>),
     Edit(Device),
     New,
@@ -72,7 +81,13 @@ impl Component for DeviceView {
                 self.props.callback.emit(Route::Edit(html));
                 show();
             },
-            _ => ()
+            Msg::New => {
+                let callback = self.link.callback(Msg::Response);
+                let html = html! { <CreateDevice callback=callback.clone() /> };
+                self.props.callback.emit(Route::New(html));
+                show();
+            }
+            _ => {}
         }
         true
     }
@@ -108,7 +123,7 @@ impl Component for DeviceView {
                 <div class="container">
                     <h2>
                      { "我的设备 " }
-                     <a href="/har/edit" class="btn btn-default btn-xs glyphicon glyphicon-plus" target="_blank"></a>
+                     <a onclick=self.link.callback(|_| Msg::New) class="btn btn-default btn-xs modal_load glyphicon glyphicon-plus"></a>
                     </h2>
                     <table class="table">
                         <thead>

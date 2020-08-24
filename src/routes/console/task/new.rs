@@ -1,7 +1,15 @@
-use crate::services::task::TaskRequest;
-use crate::error::Error;
-use crate::types::task::{NewTask, Task};
-use yew::{Callback, Component, ComponentLink, Html};
+use yew::{
+    Callback,
+    Component,
+    ComponentLink,
+    Html
+};
+
+use crate::types::task::{
+    NewTask,
+    Task
+};
+
 use status_protoc::status::console::task::TaskStatus;
 use yew::prelude::*;
 use yew::services::fetch::FetchTask;
@@ -9,6 +17,8 @@ use log::debug;
 use std::str::FromStr;
 use crate::services::device::DeviceRequest;
 use crate::types::device::Device;
+use crate::services::task::TaskRequest;
+use crate::error::Error;
 
 pub struct CreateTask {
     tr: TaskRequest,

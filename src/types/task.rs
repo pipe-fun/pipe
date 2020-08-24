@@ -1,4 +1,8 @@
-use chrono::{NaiveDateTime, NaiveTime, NaiveDate};
+use chrono::{
+    NaiveDateTime,
+    NaiveTime,
+    NaiveDate
+};
 use std::str::FromStr;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]

@@ -1,9 +1,13 @@
-use crate::services::requests::Requests;
-use crate::error::Error;
+use crate::types::task::{
+    Task,
+    NewTask
+};
+
 use yew::Callback;
-use crate::types::task::{Task, NewTask};
 use yew::services::fetch::FetchTask;
 use status_protoc::status::console::task::TaskStatus;
+use crate::services::requests::Requests;
+use crate::error::Error;
 
 #[derive(Default, Debug)]
 pub struct TaskRequest {

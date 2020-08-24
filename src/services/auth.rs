@@ -1,10 +1,13 @@
+use crate::types::auth::{
+    LoginInfo,
+    UserInfo
+};
+
 use yew::callback::Callback;
 use yew::services::fetch::FetchTask;
 use status_protoc::status::user::login::LoginStatus;
-
 use crate::error::Error;
 use crate::services::requests::Requests;
-use crate::types::auth::{LoginInfo, UserInfo};
 
 /// Apis for authentication
 #[derive(Default, Debug)]

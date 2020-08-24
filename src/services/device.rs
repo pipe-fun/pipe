@@ -1,9 +1,13 @@
-use crate::services::requests::Requests;
-use crate::error::Error;
+use crate::types::device::{
+    Device,
+    NewDevice
+};
+
 use yew::Callback;
 use yew::services::fetch::FetchTask;
-use crate::types::device::{Device, NewDevice};
 use status_protoc::status::console::device::DeviceStatus;
+use crate::services::requests::Requests;
+use crate::error::Error;
 
 #[derive(Default, Debug)]
 pub struct DeviceRequest {

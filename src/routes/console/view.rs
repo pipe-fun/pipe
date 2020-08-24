@@ -1,5 +1,3 @@
-use yew::{ComponentLink, Component, Html};
-use yew::prelude::*;
 use crate::components::{
     header::Header,
     footer::Footer,
@@ -9,6 +7,9 @@ use crate::routes::console::{
     task::view::TaskView,
     device::view::DeviceView
 };
+
+use yew::{ComponentLink, Component, Html};
+use yew::prelude::*;
 use crate::routes::console::from_js::addEditEvent;
 
 pub enum Route {
@@ -19,7 +20,6 @@ pub enum Route {
 
 pub struct Console {
     route: Route,
-    response: Callback<Route>,
     link: ComponentLink<Self>
 }
 pub enum Msg {
@@ -33,7 +33,6 @@ impl Component for Console {
     fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
         Self {
             route: Route::None,
-            response: link.callback(Msg::UpdateRoute),
             link,
         }
     }

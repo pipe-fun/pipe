@@ -1,4 +1,14 @@
-use yew::{ComponentLink, Component, Html};
+use yew::{
+    ComponentLink,
+    Component,
+    Html
+};
+
+use crate::types::auth::{
+    LoginInfo,
+    UserInfo
+};
+
 use yew::prelude::*;
 use yew::services::fetch::FetchTask;
 use status_protoc::status::user::login::LoginStatus;
@@ -9,7 +19,6 @@ use crate::error::Error;
 use crate::services::auth::Auth;
 use crate::routes::AppRoute;
 use crate::components::footer::Footer;
-use crate::types::auth::{LoginInfo, UserInfo};
 
 pub struct Login {
     auth: Auth,

@@ -1,16 +1,27 @@
-use crate::services::task::TaskRequest;
-use crate::error::Error;
-use crate::types::task::Task;
-use yew::{Callback, Component, ComponentLink, Html};
-use yew::prelude::*;
-use yew::services::fetch::FetchTask;
+use yew::{
+    Callback,
+    Component,
+    ComponentLink,
+    Html
+};
+
 use super::{
     edit::TaskEdit,
     new::CreateTask,
 };
 
-use crate::routes::console::from_js::{unShow, deleteBackDrop, show};
+use crate::routes::console::from_js::{
+    unShow,
+    deleteBackDrop,
+    show
+};
+
+use yew::prelude::*;
+use yew::services::fetch::FetchTask;
 use crate::routes::console::view::Route;
+use crate::services::task::TaskRequest;
+use crate::error::Error;
+use crate::types::task::Task;
 
 pub struct TaskView {
     tr: TaskRequest,
@@ -23,7 +34,6 @@ pub struct TaskView {
 }
 
 pub enum Msg {
-    Request,
     Response(Result<Vec<Task>, Error>),
     Edit(Task),
     New,
@@ -70,7 +80,7 @@ impl Component for TaskView {
                 self.props.callback.emit(Route::New(html));
                 show();
             }
-            _ => ()
+            _ => {}
         }
         true
     }

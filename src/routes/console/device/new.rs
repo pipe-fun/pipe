@@ -2,92 +2,86 @@ use yew::{
     Callback,
     Component,
     ComponentLink,
-    Html,
+    Html
+};
+
+use crate::types::device::{
+    Device,
+    NewDevice
 };
 
 use yew::prelude::*;
 use yew::services::fetch::FetchTask;
 use status_protoc::status::console::device::DeviceStatus;
-use crate::types::device::Device;
-use crate::services::device::DeviceRequest;
 use crate::error::Error;
+use crate::services::device::DeviceRequest;
 
-pub struct DeviceEdit {
+pub struct CreateDevice {
     dr: DeviceRequest,
-    error: Option<Error>,
-    request: Device,
     response: Callback<Result<DeviceStatus, Error>>,
     read_device_response: Callback<Result<Vec<Device>, Error>>,
+    request: NewDevice,
     task: Option<FetchTask>,
     props: Props,
     link: ComponentLink<Self>,
 }
 
 pub enum Msg {
-    DeleteRequest,
-    UpdateRequest,
     Response(Result<DeviceStatus, Error>),
     DeviceReadResponse(Result<Vec<Device>, Error>),
+    Request,
     UpdateDeviceName(String),
 }
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    pub device: Device,
     pub callback: Callback<Result<Vec<Device>, Error>>,
 }
 
-impl Component for DeviceEdit {
+impl Component for CreateDevice {
     type Message = Msg;
     type Properties = Props;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         Self {
             dr: DeviceRequest::new(),
-            error: None,
-            request: props.device.clone(),
             response: link.callback(Msg::Response),
             read_device_response: link.callback(Msg::DeviceReadResponse),
+            request: NewDevice::default(),
             task: None,
             props,
-            link,
+            link
         }
     }
 
     fn update(&mut self, msg: Self::Message) -> bool {
         match msg {
-            Msg::Response(Ok(_)) => {
-                self.task = None;
-                self.task = Some(self.dr.read(self.read_device_response.clone()));
-            }
-            Msg::Response(Err(e)) => self.error = Some(e),
             Msg::DeviceReadResponse(ds) => {
                 self.task = None;
                 self.props.callback.emit(ds);
-            }
-            Msg::DeleteRequest => {
-                self.task = Some(self.dr.delete(&self.props.device.token, self.response.clone()));
-            }
-            Msg::UpdateRequest => {
-                self.task = Some(self.dr.update(self.request.clone(), self.response.clone()));
-            }
+            },
+            Msg::Response(_) => {
+                self.task = None;
+                self.task = Some(self.dr.read(self.read_device_response.clone()));
+            },
+            Msg::Request => {
+                self.task = Some(self.dr.create(self.request.clone(), self.response.clone()))
+            },
             Msg::UpdateDeviceName(n) => self.request.edit_name(&n),
         }
         true
     }
 
     fn change(&mut self, props: Self::Properties) -> bool {
-        self.request = props.device.clone();
         self.props = props;
+        self.request = NewDevice::default();
         true
     }
 
     fn view(&self) -> Html {
-        let delete = self.link.callback(|_| Msg::DeleteRequest);
-
         let onsubmit = self.link.callback(|ev: FocusEvent| {
             ev.prevent_default();
-            Msg::UpdateRequest
+            Msg::Request
         });
 
         let oninput_name = self
@@ -108,7 +102,6 @@ impl Component for DeviceEdit {
                 </div>
 
                <div class="text-right">
-                    <a class="btn btn-default" onclick=delete>{ "删除" }</a>
                     <button type="submit" class="btn btn-primary">{ "提交" }</button>
                </div>
             </form>

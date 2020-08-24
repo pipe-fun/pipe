@@ -1,9 +1,25 @@
-use log::debug;
-use serde::{Deserialize, Serialize};
-use yew::callback::Callback;
-use yew::format::{Json, Nothing, Text};
-use yew::services::fetch::{FetchService, FetchTask, Request, Response, FetchOptions, Credentials};
+use serde::{
+    Deserialize,
+    Serialize,
+};
 
+use yew::format::{
+    Json,
+    Nothing,
+    Text
+};
+
+use yew::services::fetch::{
+    FetchService,
+    FetchTask,
+    Request,
+    Response,
+    FetchOptions,
+    Credentials
+};
+
+use log::debug;
+use yew::callback::Callback;
 use crate::error::Error;
 use crate::types::ErrorInfo;
 

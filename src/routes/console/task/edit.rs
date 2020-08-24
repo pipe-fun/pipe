@@ -1,13 +1,23 @@
-use crate::services::task::TaskRequest;
-use crate::error::Error;
-use crate::types::task::{NewTask, Task};
-use yew::{Callback, Component, ComponentLink, Html};
+use yew::{
+    Callback,
+    Component,
+    ComponentLink,
+    Html,
+};
+
+use crate::types::task::{
+    NewTask,
+    Task
+};
+
 use status_protoc::status::console::task::TaskStatus;
 use yew::prelude::*;
 use yew::services::fetch::FetchTask;
 use std::str::FromStr;
 use crate::types::device::Device;
 use crate::services::device::DeviceRequest;
+use crate::services::task::TaskRequest;
+use crate::error::Error;
 
 pub struct TaskEdit {
     tr: TaskRequest,
@@ -58,7 +68,7 @@ impl Component for TaskEdit {
             task: None,
             devices: vec![],
             props,
-            link
+            link,
         }
     }
 
@@ -67,37 +77,37 @@ impl Component for TaskEdit {
             Msg::Response(Ok(_)) => {
                 self.task = None;
                 self.task = Some(self.tr.read(self.read_task_response.clone()));
-            },
+            }
             Msg::Response(Err(e)) => self.error = Some(e),
             Msg::TaskReadResponse(ts) => {
                 self.task = None;
                 self.props.callback.emit(ts);
-            },
+            }
             Msg::DeviceReadResponse(Ok(ds)) => {
                 self.task = None;
                 self.devices = ds;
-            },
+            }
             Msg::DeleteRequest => {
                 self.task = Some(self.tr.delete(self.props.task.id, self.response.clone()));
-            },
+            }
             Msg::UpdateRequest => {
                 self.task = Some(self.tr.update(self.props.task.id
                                                 , self.request.clone()
                                                 , self.response.clone()));
-            },
+            }
             Msg::UpdateTaskName(n) => self.request.edit_name(&n),
             Msg::UpdateActive(select) => {
                 if let ChangeData::Select(select) = select {
                     self.request.edit_active(bool::from_str(&select.value()).unwrap())
                 }
-            },
+            }
             Msg::UpdateExecuteTime(t) => self.request.edit_time(&t),
             Msg::UpdateCommand(c) => self.request.edit_command(&c),
             Msg::UpdateToken(select) => {
                 if let ChangeData::Select(select) = select {
                     self.request.edit_token(&select.value())
                 }
-            },
+            }
             Msg::DeviceReadResponse(Err(_)) => {}
         }
         true

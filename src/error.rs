@@ -1,7 +1,7 @@
 //! Error type for error handling
 
-use crate::types::ErrorInfo;
 use thiserror::Error as ThisError;
+use crate::types::ErrorInfo;
 
 /// Define all possible errors
 #[derive(ThisError, Clone, Debug)]

@@ -9,40 +9,25 @@ edition = "2018"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-dotenv_codegen = "0.15"
-lazy_static = "1.4"
 log = "0.4"
-parking_lot = "0.10"
-pulldown-cmark = "0.6"
 serde = "1.0"
 serde_json = "1.0"
 serde_derive = "1.0"
 thiserror = "1"
 yew = "0.17"
-yew-router = { version="0.14", features = ["web_sys"] }
 wasm-bindgen = "0.2"
 wasm-logger = "0.2"
-wee_alloc = "0.4"
+js-sys = "0.3"
+wasm-bindgen-futures = "0.4"
 
-[dependencies.status-protoc]
-version = "0.1"
-path = "../status-protoc"
-
-[dependencies.web-sys]
-version = "0.3"
-features = [
-    "Document",
-    "Element",
-    "Node",
-    "Window",
-    "HtmlCollection",
-]
+[dependencies.yew-router]
+version = "0.14"
+features = ["web_sys"]
 
 [dependencies.chrono]
 version = "0.4"
 features = ["serde"]
 
-[dev-dependencies]
-js-sys = "0.3"
-wasm-bindgen-futures = "0.4"
-wasm-bindgen-test = "0.3"
+[dependencies.status-protoc]
+version = "0.1"
+path = "../status-protoc"

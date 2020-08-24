@@ -9,7 +9,7 @@ function addEditEvent() {
                 setTimeout(() => {
                     edit.setAttribute("style", "display: none")
                 }, 150)
-                deleteBackDrop()
+                deleteBackDrop();
             }
         }
     )
@@ -27,7 +27,7 @@ function show() {
     edit.setAttribute("aria-hidden", "false");
     setTimeout(() => {
         edit.classList.add('in');
-    }, 150)
+    }, 150);
 }
 
 function addBackDrop() {

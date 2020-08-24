@@ -9,8 +9,8 @@ pub struct PreDevice {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Device {
-    token: String,
-    name: String,
+    pub token: String,
+    pub name: String,
     owner: String
 }
 

@@ -7,17 +7,16 @@ use yew::prelude::*;
 use yew::services::fetch::FetchTask;
 use log::debug;
 use std::str::FromStr;
-use crate::types::device::Device;
 use crate::services::device::DeviceRequest;
+use crate::types::device::Device;
 
-pub struct TaskEdit {
+pub struct CreateTask {
     tr: TaskRequest,
     dr: DeviceRequest,
-    error: Option<Error>,
-    request: NewTask,
     response: Callback<Result<TaskStatus, Error>>,
     read_task_response: Callback<Result<Vec<Task>, Error>>,
     read_device_response: Callback<Result<Vec<Device>, Error>>,
+    request: NewTask,
     task: Option<FetchTask>,
     devices: Vec<Device>,
     props: Props,
@@ -25,11 +24,10 @@ pub struct TaskEdit {
 }
 
 pub enum Msg {
-    DeleteRequest,
-    UpdateRequest,
     Response(Result<TaskStatus, Error>),
     TaskReadResponse(Result<Vec<Task>, Error>),
     DeviceReadResponse(Result<Vec<Device>, Error>),
+    Request,
     UpdateTaskName(String),
     UpdateActive(ChangeData),
     UpdateExecuteTime(String),
@@ -39,11 +37,10 @@ pub enum Msg {
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    pub task: Task,
     pub callback: Callback<Result<Vec<Task>, Error>>,
 }
 
-impl Component for TaskEdit {
+impl Component for CreateTask {
     type Message = Msg;
     type Properties = Props;
 
@@ -51,11 +48,10 @@ impl Component for TaskEdit {
         Self {
             tr: TaskRequest::new(),
             dr: DeviceRequest::new(),
-            error: None,
-            request: NewTask::from(&props.task),
             response: link.callback(Msg::Response),
             read_task_response: link.callback(Msg::TaskReadResponse),
             read_device_response: link.callback(Msg::DeviceReadResponse),
+            request: NewTask::default(),
             task: None,
             devices: vec![],
             props,
@@ -65,11 +61,6 @@ impl Component for TaskEdit {
 
     fn update(&mut self, msg: Self::Message) -> bool {
         match msg {
-            Msg::Response(Ok(_)) => {
-                self.task = None;
-                self.task = Some(self.tr.read(self.read_task_response.clone()));
-            },
-            Msg::Response(Err(e)) => self.error = Some(e),
             Msg::TaskReadResponse(ts) => {
                 self.task = None;
                 self.props.callback.emit(ts);
@@ -78,13 +69,13 @@ impl Component for TaskEdit {
                 self.task = None;
                 self.devices = ds;
             },
-            Msg::DeleteRequest => {
-                self.task = Some(self.tr.delete(self.props.task.id, self.response.clone()));
+            Msg::Response(_) => {
+                self.task = None;
+                self.task = Some(self.tr.read(self.read_task_response.clone()));
             },
-            Msg::UpdateRequest => {
-                self.task = Some(self.tr.update(self.props.task.id
-                                                , self.request.clone()
-                                                , self.response.clone()));
+            Msg::Request => {
+                debug!("{:?}", self.request);
+                self.task = Some(self.tr.create(self.request.clone(), self.response.clone()))
             },
             Msg::UpdateTaskName(n) => self.request.edit_name(&n),
             Msg::UpdateActive(select) => {
@@ -99,7 +90,7 @@ impl Component for TaskEdit {
                     self.request.edit_token(&select.value())
                 }
             },
-            Msg::DeviceReadResponse(Err(_)) => {}
+            _ => ()
         }
         true
     }
@@ -115,16 +106,14 @@ impl Component for TaskEdit {
 
     fn change(&mut self, props: Self::Properties) -> bool {
         self.props = props;
-        self.request = NewTask::from(&self.props.task);
+        self.request = NewTask::default();
         true
     }
 
     fn view(&self) -> Html {
-        let delete = self.link.callback(|_| Msg::DeleteRequest);
-
         let onsubmit = self.link.callback(|ev: FocusEvent| {
             ev.prevent_default();
-            Msg::UpdateRequest
+            Msg::Request
         });
 
         let oninput_name = self
@@ -146,15 +135,6 @@ impl Component for TaskEdit {
         let onchange_device = self
             .link
             .callback(|ev: ChangeData| Msg::UpdateToken(ev));
-
-        let device_options = self
-            .devices
-            .iter()
-            .map(|d| if d.token.eq(&self.request.device_token) {
-                html! { <option value=d.token.clone() selected=true>{ d.name.clone() }</option> }
-            } else {
-                html! { <option value=d.token.clone()>{ d.name.clone() }</option> }
-            }).collect::<Html>();
 
         html! {
             <form onsubmit=onsubmit>
@@ -190,23 +170,24 @@ impl Component for TaskEdit {
                 <div class="form-group">
                     <label class="control-label"><span>{ "绑定设备" }</span></label>
                     <select class="form-control" onchange=onchange_device required=true>
-                        { device_options }
-                     </select>
+                        <option value="" selected=true hidden=true>{ "请选择 设备" }</option>
+                        { for self.devices
+                        .iter()
+                        .map(|d| { html! { <option value=d.token.clone()>{ d.name.clone() }</option> } })}
+                    </select>
                 </div>
 
                 <div id="variables">
                     <div class="form-group">
                         <label class="control-label"><span>{ "状态" }</span></label>
                         <select class="form-control" onchange=onchange_active required=true>
-                            <option value=&self.request.active selected=true>{ "不修改" }</option>
                             <option value="true">{ "激活" }</option>
-                            <option value="false">{ "禁用" }</option>
+                            <option value="false" selected=true>{ "禁用" }</option>
                          </select>
                     </div>
                 </div>
 
                <div class="text-right">
-                    <a class="btn btn-default" onclick=delete>{ "删除" }</a>
                     <button type="submit" class="btn btn-primary">{ "提交" }</button>
                </div>
             </form>

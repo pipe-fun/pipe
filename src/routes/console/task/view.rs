@@ -6,8 +6,19 @@ use status_protoc::status::console::task::TaskStatus;
 use yew::prelude::*;
 use yew::services::fetch::FetchTask;
 use log::debug;
-use super::edit::TaskEdit;
-use wasm_bindgen::{prelude::wasm_bindgen};
+use super::{
+    edit::TaskEdit,
+    new::CreateTask,
+};
+
+use wasm_bindgen::{closure::Closure, prelude::wasm_bindgen, JsValue};
+
+#[derive(Clone)]
+pub enum Route {
+    None,
+    Edit(Task),
+    New,
+}
 
 pub struct TaskView {
     tr: TaskRequest,
@@ -15,14 +26,15 @@ pub struct TaskView {
     response: Callback<Result<Vec<Task>, Error>>,
     task: Option<FetchTask>,
     tasks: Vec<Task>,
-    this_task: Option<Task>,
+    route: Route,
     link: ComponentLink<Self>,
 }
 
 pub enum Msg {
     Request,
     Response(Result<Vec<Task>, Error>),
-    Edit(Option<Task>),
+    Edit(Task),
+    New,
 }
 
 impl Component for TaskView {
@@ -36,7 +48,7 @@ impl Component for TaskView {
             response: link.callback(Msg::Response),
             task: None,
             tasks: vec![],
-            this_task: None,
+            route: Route::None,
             link,
         }
     }
@@ -46,17 +58,20 @@ impl Component for TaskView {
             Msg::Response(Ok(ts)) => {
                 unShow();
                 deleteBackDrop();
-                self.this_task = None;
                 self.tasks = ts;
-                true
+                self.route = Route::None;
             },
             Msg::Edit(t) => {
-                self.this_task = t;
+                self.route = Route::Edit(t);
                 show();
-                true
-            }
-            _ => false
+            },
+            Msg::New => {
+                self.route = Route::New;
+                show();
+            },
+            _ => ()
         }
+        true
     }
 
     fn change(&mut self, _props: Self::Properties) -> bool { false }
@@ -73,7 +88,12 @@ impl Component for TaskView {
 
     fn view(&self) -> Html {
         let callback = self.link.callback(Msg::Response);
-        let task = self.this_task.clone();
+
+        let route = match &self.route {
+            Route::None => html! {},
+            Route::New => html! { <CreateTask callback=callback.clone() /> },
+            Route::Edit(t) => html! { <TaskEdit task=t callback=callback.clone() /> },
+        };
 
         let tbody = self.tasks.iter().map(|t| {
             let t_c = t.clone();
@@ -92,7 +112,7 @@ impl Component for TaskView {
                     <td>{ "10 小时后" }</td>
 
                     <td>
-                        <a class="modal_load" onclick=self.link.callback(move |_| Msg::Edit(Some(t_c.clone())))>
+                        <a class="modal_load" onclick=self.link.callback(move |_| Msg::Edit(t_c.clone()))>
                         { "修改 " }</a>
                         <a class="modal_load">{ "立即执行" }</a>
                     </td>
@@ -104,19 +124,18 @@ impl Component for TaskView {
             <>
                 <div class="modal fade" id="modal_load"
                 tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
-                    {
-                        if task.is_some() {
-                            html! { <TaskEdit task=task.unwrap() callback=callback.clone() /> }
-                        } else {
-                            html! {}
-                        }
-                    }
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                        { route }
+                        </div>
+                    </div>
                 </div>
+
                 <section class="task">
                     <div class="container">
                         <h2>
                         { "我的任务 " }
-                        <a href="/task/new" class="btn btn-default btn-xs modal_load glyphicon glyphicon-plus"></a>
+                        <a onclick=self.link.callback(|_| Msg::New) class="btn btn-default btn-xs modal_load glyphicon glyphicon-plus"></a>
                         </h2>
                         <table class="table">
                             <thead>

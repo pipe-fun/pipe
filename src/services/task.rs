@@ -49,7 +49,7 @@ impl TaskRequest {
         )
     }
 
-    pub fn put(
+    pub fn update(
         &mut self,
         id: i32,
         info: NewTask,
@@ -57,6 +57,18 @@ impl TaskRequest {
     ) -> FetchTask {
         self.requests.put::<NewTask, TaskStatus>(
             format!("/console/task/update/{}", id),
+            info,
+            callback,
+        )
+    }
+
+    pub fn create(
+        &mut self,
+        info: NewTask,
+        callback: Callback<Result<TaskStatus, Error>>,
+    ) -> FetchTask {
+        self.requests.post::<NewTask, TaskStatus>(
+            format!("/console/task/create"),
             info,
             callback,
         )

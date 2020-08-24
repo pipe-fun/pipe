@@ -19,7 +19,6 @@ pub struct Login {
     task: Option<FetchTask>,
     props: Props,
     router_agent: Box<dyn Bridge<RouteAgent>>,
-    test: Callback<Result<UserInfo, Error>>,
     link: ComponentLink<Self>,
 }
 
@@ -29,7 +28,6 @@ pub enum Msg {
     Ignore,
     UpdateUserName(String),
     UpdatePassword(String),
-    Test,
     Auth(Result<UserInfo, Error>),
 }
 
@@ -52,7 +50,6 @@ impl Component for Login {
             task: None,
             props,
             router_agent: RouteAgent::bridge(link.callback(|_| Msg::Ignore)),
-            test: link.callback(Msg::Auth),
             link,
         }
     }
@@ -78,7 +75,6 @@ impl Component for Login {
             }
             Msg::UpdateUserName(value) => self.request.user_name = value,
             Msg::UpdatePassword(value) => self.request.user_password = value,
-            Msg::Test => self.task = Some(self.auth.authorize(self.test.clone())),
             Msg::Auth(_) => {}
             Msg::Ignore => {}
         }
@@ -116,7 +112,9 @@ impl Component for Login {
                             name="name"
                             id="name"
                             placeholder="请输入 用户名"
-                            value=&self.request.user_name oninput=oninput_name
+                            required=true
+                            value=&self.request.user_name
+                            oninput=oninput_name
                             />
                         </div>
 
@@ -126,16 +124,16 @@ impl Component for Login {
                             name="password"
                             id="password"
                             placeholder="请输入 密码"
-                            value=&self.request.user_password oninput=oninput_password
+                            required=true
+                            value=&self.request.user_password
+                            oninput=oninput_password
                             />
                         </div>
 
                         <div class="text-right">
-                            <p><a href="/password_reset">{ "忘记密码?" }</a></p>
                             <button type="submit" class="btn btn-default">{ "登录" }</button>
                             <button type="submit" class="btn btn-default">{ "注册" }</button>
                         </div>
-                        <button type="button" class="btn btn-default" onclick=self.link.callback(|_| Msg::Test)>{ "测试" }</button>
                     </form>
                 </div>
                 <Footer />

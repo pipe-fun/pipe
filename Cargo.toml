@@ -31,3 +31,7 @@ features = ["serde"]
 [dependencies.status-protoc]
 version = "0.1"
 path = "../status-protoc"
+
+[dependencies.web2core]
+version = "0.1"
+path = "../web2core"

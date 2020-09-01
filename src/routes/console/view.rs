@@ -16,12 +16,14 @@ pub enum Route {
     None,
     Edit(Html),
     New(Html),
+    Execute(Html)
 }
 
 pub struct Console {
     route: Route,
     link: ComponentLink<Self>
 }
+
 pub enum Msg {
     UpdateRoute(Route)
 }
@@ -61,6 +63,7 @@ impl Component for Console {
             Route::None => html! {},
             Route::Edit(html) => html.clone(),
             Route::New(html) => html.clone(),
+            Route::Execute(html) => html.clone(),
         };
 
         let part = html! {

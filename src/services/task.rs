@@ -6,6 +6,7 @@ use crate::types::task::{
 use yew::Callback;
 use yew::services::fetch::FetchTask;
 use status_protoc::status::console::task::TaskStatus;
+use web2core::protoc::ExecuteResult;
 use crate::services::requests::Requests;
 use crate::error::Error;
 
@@ -31,13 +32,14 @@ impl TaskRequest {
         )
     }
 
-    pub fn _read_by_id(
+    pub fn execute(
         &mut self,
-        id: i32,
-        callback: Callback<Result<Task, Error>>,
+        info: Task,
+        callback: Callback<Result<ExecuteResult, Error>>,
     ) -> FetchTask {
-        self.requests.get::<Task>(
-            format!("/console/task/read_by_id/{}", id),
+        self.requests.post::<Task, ExecuteResult>(
+            format!("/console/task/execute"),
+            info,
             callback,
         )
     }

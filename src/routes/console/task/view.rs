@@ -18,6 +18,7 @@ use crate::routes::console::from_js::{
 
 use yew::prelude::*;
 use yew::services::fetch::FetchTask;
+use web2core::protoc::ExecuteResult;
 use crate::routes::console::view::Route;
 use crate::services::task::TaskRequest;
 use crate::error::Error;
@@ -26,6 +27,7 @@ use crate::types::task::Task;
 pub struct TaskView {
     tr: TaskRequest,
     response: Callback<Result<Vec<Task>, Error>>,
+    execute_response: Callback<Result<ExecuteResult, Error>>,
     task: Option<FetchTask>,
     tasks: Vec<Task>,
     route: Route,
@@ -35,7 +37,9 @@ pub struct TaskView {
 
 pub enum Msg {
     Response(Result<Vec<Task>, Error>),
+    ExecuteResponse(Result<ExecuteResult, Error>),
     Edit(Task),
+    Execute(Task),
     New,
 }
 
@@ -52,6 +56,7 @@ impl Component for TaskView {
         Self {
             tr: TaskRequest::new(),
             response: link.callback(Msg::Response),
+            execute_response: link.callback(Msg::ExecuteResponse),
             task: None,
             tasks: vec![],
             route: Route::None,
@@ -68,11 +73,24 @@ impl Component for TaskView {
                 self.tasks = ts;
                 self.route = Route::None;
             }
+            Msg::ExecuteResponse(Ok(result)) => {
+                self.task = None;
+                let html = match result {
+                    ExecuteResult::Ok => html! { <h1 class="alert alert-success text-center"> { "执行成功" }</h1> },
+                    ExecuteResult::CoreOffline => html! { <h1 class="alert alert-danger text-center">{ "未与核心连接" }</h1> },
+                    ExecuteResult::DeviceOffline => html! { <h1 class="alert alert-danger text-center">{ "设备离线" }</h1> },
+                };
+                self.props.callback.emit(Route::Execute(html));
+                show();
+            }
             Msg::Edit(t) => {
                 let callback = self.link.callback(Msg::Response);
                 let html = html! { <TaskEdit task=t callback=callback.clone() /> };
                 self.props.callback.emit(Route::Edit(html));
                 show();
+            }
+            Msg::Execute(t) => {
+                self.task = Some(self.tr.execute(t, self.execute_response.clone()));
             }
             Msg::New => {
                 let callback = self.link.callback(Msg::Response);
@@ -101,7 +119,8 @@ impl Component for TaskView {
 
     fn view(&self) -> Html {
         let tbody = self.tasks.iter().map(|t| {
-            let t_c = t.clone();
+            let t_c1 = t.clone();
+            let t_c2 = t.clone();
             html! {
                 <tr>
                     <td>
@@ -117,9 +136,10 @@ impl Component for TaskView {
                     <td>{ "10 小时后" }</td>
 
                     <td>
-                        <a class="modal_load" onclick=self.link.callback(move |_| Msg::Edit(t_c.clone()))>
-                        { "编辑 " }</a>
-                        <a class="modal_load">{ "立即执行" }</a>
+                        <button class="my_button" onclick=self.link.callback(move |_| Msg::Edit(t_c1.clone()))>
+                        { "编辑" }</button>
+                        <button class="my_button my_button_offset" onclick=self.link.callback(move |_| Msg::Execute(t_c2.clone()))>
+                        { "立即执行" }</button>
                     </td>
                 </tr>
             }

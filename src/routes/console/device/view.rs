@@ -111,8 +111,8 @@ impl Component for DeviceView {
                     <td>{ d.token.clone() }</td>
 
                     <td>
-                        <a class="modal_load" onclick=self.link.callback(move |_| Msg::Edit(d_c.clone()))>
-                        { "编辑" }</a>
+                        <button class="my_button" onclick=self.link.callback(move |_| Msg::Edit(d_c.clone()))>
+                        { "编辑" }</button>
                     </td>
                 </tr>
             }

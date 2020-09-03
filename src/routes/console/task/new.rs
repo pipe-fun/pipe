@@ -47,7 +47,7 @@ pub enum Msg {
 
 #[derive(Properties, Clone)]
 pub struct Props {
-    pub callback: Callback<Result<Vec<Task>, Error>>,
+    pub callback: Callback<(Vec<Task>, String)>,
 }
 
 impl Component for CreateTask {
@@ -71,9 +71,9 @@ impl Component for CreateTask {
 
     fn update(&mut self, msg: Self::Message) -> bool {
         match msg {
-            Msg::TaskReadResponse(ts) => {
+            Msg::TaskReadResponse(Ok(ts)) => {
                 self.task = None;
-                self.props.callback.emit(ts);
+                self.props.callback.emit((ts, self.request.device_token.clone()));
             },
             Msg::DeviceReadResponse(Ok(ds)) => {
                 self.task = None;

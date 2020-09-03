@@ -6,7 +6,7 @@ use crate::types::task::{
 use yew::Callback;
 use yew::services::fetch::FetchTask;
 use status_protoc::status::console::task::TaskStatus;
-use web2core::protoc::ExecuteResult;
+use web2core::protoc::OpResult;
 use crate::services::requests::Requests;
 use crate::error::Error;
 
@@ -35,11 +35,22 @@ impl TaskRequest {
     pub fn execute(
         &mut self,
         info: Task,
-        callback: Callback<Result<ExecuteResult, Error>>,
+        callback: Callback<Result<OpResult, Error>>,
     ) -> FetchTask {
-        self.requests.post::<Task, ExecuteResult>(
+        self.requests.post::<Task, OpResult>(
             format!("/console/task/execute"),
             info,
+            callback,
+        )
+    }
+
+    pub fn reload(
+        &mut self,
+        token: &str,
+        callback: Callback<Result<OpResult, Error>>,
+    ) -> FetchTask {
+        self.requests.get::<OpResult>(
+            format!("/console/task/reload/{}", token),
             callback,
         )
     }

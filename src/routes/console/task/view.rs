@@ -2,7 +2,7 @@ use yew::{
     Callback,
     Component,
     ComponentLink,
-    Html
+    Html,
 };
 
 use super::{
@@ -13,12 +13,12 @@ use super::{
 use crate::routes::console::from_js::{
     unShow,
     deleteBackDrop,
-    show
+    show,
 };
 
 use yew::prelude::*;
 use yew::services::fetch::FetchTask;
-use web2core::protoc::ExecuteResult;
+use web2core::protoc::OpResult;
 use crate::routes::console::view::Route;
 use crate::services::task::TaskRequest;
 use crate::error::Error;
@@ -26,8 +26,9 @@ use crate::types::task::Task;
 
 pub struct TaskView {
     tr: TaskRequest,
-    response: Callback<Result<Vec<Task>, Error>>,
-    execute_response: Callback<Result<ExecuteResult, Error>>,
+    response_first: Callback<Result<Vec<Task>, Error>>,
+    execute_response: Callback<Result<OpResult, Error>>,
+    reload_response: Callback<Result<OpResult, Error>>,
     task: Option<FetchTask>,
     tasks: Vec<Task>,
     route: Route,
@@ -36,8 +37,10 @@ pub struct TaskView {
 }
 
 pub enum Msg {
-    Response(Result<Vec<Task>, Error>),
-    ExecuteResponse(Result<ExecuteResult, Error>),
+    Response((Vec<Task>, String)),
+    ResponseFirst(Result<Vec<Task>, Error>),
+    ExecuteResponse(Result<OpResult, Error>),
+    ReloadResponse(Result<OpResult, Error>),
     Edit(Task),
     Execute(Task),
     New,
@@ -55,8 +58,9 @@ impl Component for TaskView {
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         Self {
             tr: TaskRequest::new(),
-            response: link.callback(Msg::Response),
+            response_first: link.callback(Msg::ResponseFirst),
             execute_response: link.callback(Msg::ExecuteResponse),
+            reload_response: link.callback(Msg::ReloadResponse),
             task: None,
             tasks: vec![],
             route: Route::None,
@@ -67,37 +71,45 @@ impl Component for TaskView {
 
     fn update(&mut self, msg: Self::Message) -> bool {
         match msg {
-            Msg::Response(Ok(ts)) => {
+            Msg::Response(info) => {
                 unShow();
                 deleteBackDrop();
+                self.tasks = info.0;
+                self.route = Route::None;
+                self.task = Some(self.tr.reload(&info.1, self.reload_response.clone()));
+            },
+            Msg::ResponseFirst(Ok(ts)) => {
                 self.tasks = ts;
                 self.route = Route::None;
-            }
+            },
             Msg::ExecuteResponse(Ok(result)) => {
                 self.task = None;
                 let html = match result {
-                    ExecuteResult::Ok => html! { <h1 class="alert alert-success text-center"> { "执行成功" }</h1> },
-                    ExecuteResult::CoreOffline => html! { <h1 class="alert alert-danger text-center">{ "未与核心连接" }</h1> },
-                    ExecuteResult::DeviceOffline => html! { <h1 class="alert alert-danger text-center">{ "设备离线" }</h1> },
+                    OpResult::Ok => html! { <h1 class="alert alert-success text-center"> { "执行成功" }</h1> },
+                    OpResult::CoreOffline => html! { <h1 class="alert alert-danger text-center">{ "未与核心连接" }</h1> },
+                    OpResult::DeviceOffline => html! { <h1 class="alert alert-danger text-center">{ "设备离线" }</h1> },
                 };
                 self.props.callback.emit(Route::Execute(html));
                 show();
-            }
+            },
+            Msg::ReloadResponse(_) => {
+                self.task = None;
+            },
             Msg::Edit(t) => {
                 let callback = self.link.callback(Msg::Response);
                 let html = html! { <TaskEdit task=t callback=callback.clone() /> };
                 self.props.callback.emit(Route::Edit(html));
                 show();
-            }
+            },
             Msg::Execute(t) => {
                 self.task = Some(self.tr.execute(t, self.execute_response.clone()));
-            }
+            },
             Msg::New => {
                 let callback = self.link.callback(Msg::Response);
                 let html = html! { <CreateTask callback=callback.clone() /> };
                 self.props.callback.emit(Route::New(html));
                 show();
-            }
+            },
             _ => {}
         }
         true
@@ -112,7 +124,7 @@ impl Component for TaskView {
         if first_render {
             self.task = Some(
                 self.tr
-                    .read(self.response.clone()),
+                    .read(self.response_first.clone()),
             );
         }
     }

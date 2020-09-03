@@ -49,7 +49,7 @@ pub enum Msg {
 #[derive(Properties, Clone)]
 pub struct Props {
     pub task: Task,
-    pub callback: Callback<Result<Vec<Task>, Error>>,
+    pub callback: Callback<(Vec<Task>, String)>,
 }
 
 impl Component for TaskEdit {
@@ -79,9 +79,9 @@ impl Component for TaskEdit {
                 self.task = Some(self.tr.read(self.read_task_response.clone()));
             }
             Msg::Response(Err(e)) => self.error = Some(e),
-            Msg::TaskReadResponse(ts) => {
+            Msg::TaskReadResponse(Ok(ts)) => {
                 self.task = None;
-                self.props.callback.emit(ts);
+                self.props.callback.emit((ts, self.props.task.device_token.clone()));
             }
             Msg::DeviceReadResponse(Ok(ds)) => {
                 self.task = None;
@@ -109,6 +109,7 @@ impl Component for TaskEdit {
                 }
             }
             Msg::DeviceReadResponse(Err(_)) => {}
+            _ => {}
         }
         true
     }

@@ -105,15 +105,6 @@ impl Component for CreateTask {
         true
     }
 
-    fn rendered(&mut self, first_render: bool) {
-        if first_render {
-            self.task = Some(
-                self.dr
-                    .read(self.read_device_response.clone()),
-            );
-        }
-    }
-
     fn change(&mut self, props: Self::Properties) -> bool {
         self.props = props;
         self.request = NewTask::default();
@@ -201,6 +192,15 @@ impl Component for CreateTask {
                     <button type="submit" class="btn btn-primary">{ "提交" }</button>
                </div>
             </form>
+        }
+    }
+
+    fn rendered(&mut self, first_render: bool) {
+        if first_render {
+            self.task = Some(
+                self.dr
+                    .read(self.read_device_response.clone()),
+            );
         }
     }
 }

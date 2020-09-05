@@ -50,12 +50,6 @@ impl Component for Console {
         false
     }
 
-    fn rendered(&mut self, first_render: bool) {
-        if first_render {
-            addEditEvent();
-        }
-    }
-
     fn view(&self) -> Html {
         let callback = self.link.callback(Msg::UpdateRoute);
 
@@ -86,6 +80,12 @@ impl Component for Console {
                 <DeviceView callback=callback/>
                 <Footer />
             </>
+        }
+    }
+
+    fn rendered(&mut self, first_render: bool) {
+        if first_render {
+            addEditEvent();
         }
     }
 }

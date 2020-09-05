@@ -1,4 +1,5 @@
 pub mod login;
+pub mod logout;
 pub mod console;
 
 use yew_router::prelude::*;

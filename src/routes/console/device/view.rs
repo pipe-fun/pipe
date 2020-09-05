@@ -59,14 +59,6 @@ impl Component for DeviceView {
         }
     }
 
-    fn rendered(&mut self, first_render: bool) {
-        if first_render {
-            self.task = Some(
-                self.dr.read(self.response.clone()),
-            );
-        }
-    }
-
     fn update(&mut self, msg: Self::Message) -> bool {
         match msg {
             Msg::Response(Ok(ds)) => {
@@ -139,6 +131,14 @@ impl Component for DeviceView {
                     </table>
                 </div>
             </section>
+        }
+    }
+
+    fn rendered(&mut self, first_render: bool) {
+        if first_render {
+            self.task = Some(
+                self.dr.read(self.response.clone()),
+            );
         }
     }
 }

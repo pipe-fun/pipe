@@ -27,7 +27,7 @@ impl TaskRequest {
         callback: Callback<Result<Vec<Task>, Error>>,
     ) -> FetchTask {
         self.requests.get::<Vec<Task>>(
-            "/console/task/read".to_string(),
+            format!("/console/task/read"),
             callback,
         )
     }

@@ -13,6 +13,7 @@ use yew::{
 use crate::routes::{
     console::view::Console,
     login::Login,
+    logout::Logout,
     AppRoute,
     fix_fragment_routes,
 };
@@ -66,13 +67,6 @@ impl Component for App {
         }
     }
 
-    fn rendered(&mut self, first_render: bool) {
-        if first_render {
-            let task = self.auth.authorize(self.current_user_response.clone());
-            self.current_user_task = Some(task);
-        }
-    }
-
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::CurrentUserResponse(Ok(info)) => {
@@ -107,6 +101,7 @@ impl Component for App {
 
     fn view(&self) -> Html {
         let callback_login = self.link.callback(Msg::Authenticated);
+        let callback_logout = self.link.callback(|_| Msg::Logout);
 
         html! {
             <>
@@ -115,13 +110,20 @@ impl Component for App {
                         match route {
                             AppRoute::Login => html!{<Login callback=callback_login />},
                             AppRoute::Console => html!{<Console />},
-                            AppRoute::Logout => html!{<Console />},
+                            AppRoute::Logout => html!{<Logout callback=callback_logout />},
                         }
                     } else {
                         html! { "No found" }
                     }
                 }
             </>
+        }
+    }
+
+    fn rendered(&mut self, first_render: bool) {
+        if first_render {
+            let task = self.auth.authorize(self.current_user_response.clone());
+            self.current_user_task = Some(task);
         }
     }
 }

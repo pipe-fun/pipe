@@ -29,9 +29,19 @@ impl Auth {
         callback: Callback<Result<LoginStatus, Error>>,
     ) -> FetchTask {
         self.requests.post::<LoginInfo, LoginStatus>(
-            "/user/login".to_string(),
+            format!("/user/login"),
             login_info,
             callback,
+        )
+    }
+
+    pub fn logout(
+        &mut self,
+        callback: Callback<Result<(), Error>>,
+    ) -> FetchTask {
+        self.requests.get::<()>(
+            format!("/user/logout"),
+            callback
         )
     }
 
@@ -53,7 +63,7 @@ impl Auth {
         callback: Callback<Result<UserInfo, Error>>,
     ) -> FetchTask {
         self.requests.get::<UserInfo>(
-            "/user/auth".to_string(),
+            format!("/user/auth"),
             callback,
         )
     }

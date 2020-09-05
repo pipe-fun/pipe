@@ -26,7 +26,7 @@ impl DeviceRequest {
         callback: Callback<Result<Vec<Device>, Error>>,
     ) -> FetchTask {
         self.requests.get::<Vec<Device>>(
-            "/console/device/read".to_string(),
+            format!("/console/device/read"),
             callback,
         )
     }

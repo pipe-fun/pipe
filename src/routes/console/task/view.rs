@@ -120,15 +120,6 @@ impl Component for TaskView {
         true
     }
 
-    fn rendered(&mut self, first_render: bool) {
-        if first_render {
-            self.task = Some(
-                self.tr
-                    .read(self.response_first.clone()),
-            );
-        }
-    }
-
     fn view(&self) -> Html {
         let tbody = self.tasks.iter().map(|t| {
             let t_c1 = t.clone();
@@ -182,6 +173,15 @@ impl Component for TaskView {
                     </table>
                 </div>
             </section>
+        }
+    }
+
+    fn rendered(&mut self, first_render: bool) {
+        if first_render {
+            self.task = Some(
+                self.tr
+                    .read(self.response_first.clone()),
+            );
         }
     }
 }

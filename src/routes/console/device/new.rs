@@ -2,12 +2,12 @@ use yew::{
     Callback,
     Component,
     ComponentLink,
-    Html
+    Html,
 };
 
 use crate::types::device::{
     Device,
-    NewDevice
+    NewDevice,
 };
 
 use yew::prelude::*;
@@ -50,7 +50,7 @@ impl Component for CreateDevice {
             request: NewDevice::default(),
             task: None,
             props,
-            link
+            link,
         }
     }
 
@@ -59,14 +59,14 @@ impl Component for CreateDevice {
             Msg::DeviceReadResponse(ds) => {
                 self.task = None;
                 self.props.callback.emit(ds);
-            },
+            }
             Msg::Response(_) => {
                 self.task = None;
                 self.task = Some(self.dr.read(self.read_device_response.clone()));
-            },
+            }
             Msg::Request => {
                 self.task = Some(self.dr.create(self.request.clone(), self.response.clone()))
-            },
+            }
             Msg::UpdateDeviceName(n) => self.request.edit_name(&n),
         }
         true

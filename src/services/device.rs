@@ -1,6 +1,6 @@
 use crate::types::device::{
     Device,
-    NewDevice
+    NewDevice,
 };
 
 use yew::Callback;

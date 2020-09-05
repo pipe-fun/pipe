@@ -7,14 +7,14 @@ use yew::{
     Component,
     ComponentLink,
     Html,
-    ShouldRender
+    ShouldRender,
 };
 
 use crate::routes::{
     console::view::Console,
     login::Login,
     AppRoute,
-    fix_fragment_routes
+    fix_fragment_routes,
 };
 
 use yew::services::fetch::FetchTask;
@@ -136,9 +136,9 @@ impl App {
                     self.router_agent.send(ChangeRoute(AppRoute::Login.into())),
                 AppRoute::Logout if self.current_user.is_none() =>
                     self.router_agent.send(ChangeRoute(AppRoute::Login.into())),
-                AppRoute::Login => {},
-                AppRoute::Console => {},
-                AppRoute::Logout => {},
+                AppRoute::Login => {}
+                AppRoute::Console => {}
+                AppRoute::Logout => {}
             }
         }
     }

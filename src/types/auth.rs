@@ -14,7 +14,7 @@ impl UserInfo {
     pub fn new(name: &str) -> Self {
         Self {
             authorized: true,
-            user_name: name.into()
+            user_name: name.into(),
         }
     }
 }

@@ -2,10 +2,11 @@ use yew::{
     html,
     Component,
     ComponentLink,
-    Html
+    Html,
 };
 
 pub struct Footer;
+
 pub enum Msg {}
 
 impl Component for Footer {

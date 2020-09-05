@@ -1,7 +1,7 @@
 use chrono::{
     NaiveDateTime,
     NaiveTime,
-    NaiveDate
+    NaiveDate,
 };
 use std::str::FromStr;
 
@@ -65,7 +65,7 @@ impl NewTask {
     pub fn edit_time(&mut self, time: &str) {
         let t = match NaiveTime::from_str(time) {
             Ok(t) => t,
-            Err(_) => NaiveTime::from_hms(0,0,0),
+            Err(_) => NaiveTime::from_hms(0, 0, 0),
         };
         self.execute_time = t;
     }

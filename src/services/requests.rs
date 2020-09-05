@@ -6,7 +6,7 @@ use serde::{
 use yew::format::{
     Json,
     Nothing,
-    Text
+    Text,
 };
 
 use yew::services::fetch::{
@@ -15,7 +15,7 @@ use yew::services::fetch::{
     Request,
     Response,
     FetchOptions,
-    Credentials
+    Credentials,
 };
 
 use log::debug;
@@ -40,9 +40,9 @@ impl Requests {
         body: B,
         callback: Callback<Result<T, Error>>,
     ) -> FetchTask
-    where
-        for<'de> T: Deserialize<'de> + 'static + std::fmt::Debug,
-        B: Into<Text> + std::fmt::Debug,
+        where
+                for<'de> T: Deserialize<'de> + 'static + std::fmt::Debug,
+                B: Into<Text> + std::fmt::Debug,
     {
         let handler = move |response: Response<Text>| {
             if let (meta, Ok(data)) = response.into_parts() {
@@ -92,16 +92,16 @@ impl Requests {
 
     /// Delete request
     pub fn delete<T>(&mut self, url: String, callback: Callback<Result<T, Error>>) -> FetchTask
-    where
-        for<'de> T: Deserialize<'de> + 'static + std::fmt::Debug,
+        where
+                for<'de> T: Deserialize<'de> + 'static + std::fmt::Debug,
     {
         self.builder("DELETE", url, Nothing, callback)
     }
 
     /// Get request
     pub fn get<T>(&mut self, url: String, callback: Callback<Result<T, Error>>) -> FetchTask
-    where
-        for<'de> T: Deserialize<'de> + 'static + std::fmt::Debug,
+        where
+                for<'de> T: Deserialize<'de> + 'static + std::fmt::Debug,
     {
         self.builder("GET", url, Nothing, callback)
     }
@@ -113,9 +113,9 @@ impl Requests {
         body: B,
         callback: Callback<Result<T, Error>>,
     ) -> FetchTask
-    where
-        for<'de> T: Deserialize<'de> + 'static + std::fmt::Debug,
-        B: Serialize,
+        where
+                for<'de> T: Deserialize<'de> + 'static + std::fmt::Debug,
+                B: Serialize,
     {
         let body: Text = Json(&body).into();
         self.builder("POST", url, body, callback)
@@ -128,9 +128,9 @@ impl Requests {
         body: B,
         callback: Callback<Result<T, Error>>,
     ) -> FetchTask
-    where
-        for<'de> T: Deserialize<'de> + 'static + std::fmt::Debug,
-        B: Serialize,
+        where
+                for<'de> T: Deserialize<'de> + 'static + std::fmt::Debug,
+                B: Serialize,
     {
         let body: Text = Json(&body).into();
         self.builder("PUT", url, body, callback)

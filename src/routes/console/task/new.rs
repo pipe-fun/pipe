@@ -2,12 +2,12 @@ use yew::{
     Callback,
     Component,
     ComponentLink,
-    Html
+    Html,
 };
 
 use crate::types::task::{
     NewTask,
-    Task
+    Task,
 };
 
 use status_protoc::status::console::task::TaskStatus;
@@ -65,7 +65,7 @@ impl Component for CreateTask {
             task: None,
             devices: vec![],
             props,
-            link
+            link,
         }
     }
 
@@ -74,32 +74,32 @@ impl Component for CreateTask {
             Msg::TaskReadResponse(Ok(ts)) => {
                 self.task = None;
                 self.props.callback.emit((ts, self.request.device_token.clone()));
-            },
+            }
             Msg::DeviceReadResponse(Ok(ds)) => {
                 self.task = None;
                 self.devices = ds;
-            },
+            }
             Msg::Response(_) => {
                 self.task = None;
                 self.task = Some(self.tr.read(self.read_task_response.clone()));
-            },
+            }
             Msg::Request => {
                 debug!("{:?}", self.request);
                 self.task = Some(self.tr.create(self.request.clone(), self.response.clone()))
-            },
+            }
             Msg::UpdateTaskName(n) => self.request.edit_name(&n),
             Msg::UpdateActive(select) => {
                 if let ChangeData::Select(select) = select {
                     self.request.edit_active(bool::from_str(&select.value()).unwrap())
                 }
-            },
+            }
             Msg::UpdateExecuteTime(t) => self.request.edit_time(&t),
             Msg::UpdateCommand(c) => self.request.edit_command(&c),
             Msg::UpdateToken(select) => {
                 if let ChangeData::Select(select) = select {
                     self.request.edit_token(&select.value())
                 }
-            },
+            }
             _ => ()
         }
         true

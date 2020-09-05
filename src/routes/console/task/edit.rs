@@ -7,7 +7,7 @@ use yew::{
 
 use crate::types::task::{
     NewTask,
-    Task
+    Task,
 };
 
 use status_protoc::status::console::task::TaskStatus;

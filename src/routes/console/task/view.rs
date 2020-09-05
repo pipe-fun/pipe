@@ -77,11 +77,11 @@ impl Component for TaskView {
                 self.tasks = info.0;
                 self.route = Route::None;
                 self.task = Some(self.tr.reload(&info.1, self.reload_response.clone()));
-            },
+            }
             Msg::ResponseFirst(Ok(ts)) => {
                 self.tasks = ts;
                 self.route = Route::None;
-            },
+            }
             Msg::ExecuteResponse(Ok(result)) => {
                 self.task = None;
                 let html = match result {
@@ -91,25 +91,25 @@ impl Component for TaskView {
                 };
                 self.props.callback.emit(Route::Execute(html));
                 show();
-            },
+            }
             Msg::ReloadResponse(_) => {
                 self.task = None;
-            },
+            }
             Msg::Edit(t) => {
                 let callback = self.link.callback(Msg::Response);
                 let html = html! { <TaskEdit task=t callback=callback.clone() /> };
                 self.props.callback.emit(Route::Edit(html));
                 show();
-            },
+            }
             Msg::Execute(t) => {
                 self.task = Some(self.tr.execute(t, self.execute_response.clone()));
-            },
+            }
             Msg::New => {
                 let callback = self.link.callback(Msg::Response);
                 let html = html! { <CreateTask callback=callback.clone() /> };
                 self.props.callback.emit(Route::New(html));
                 show();
-            },
+            }
             _ => {}
         }
         true

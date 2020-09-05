@@ -1,6 +1,6 @@
 use crate::types::task::{
     Task,
-    NewTask
+    NewTask,
 };
 
 use yew::Callback;

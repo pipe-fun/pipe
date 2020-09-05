@@ -1,7 +1,7 @@
 use yew::{Callback,
           Component,
           ComponentLink,
-          Html
+          Html,
 };
 
 use super::{
@@ -12,7 +12,7 @@ use super::{
 use crate::routes::console::from_js::{
     unShow,
     deleteBackDrop,
-    show
+    show,
 };
 
 use yew::prelude::*;
@@ -55,7 +55,7 @@ impl Component for DeviceView {
             devices: vec![],
             route: Route::None,
             props,
-            link
+            link,
         }
     }
 
@@ -74,13 +74,13 @@ impl Component for DeviceView {
                 deleteBackDrop();
                 self.devices = ds;
                 self.route = Route::None;
-            },
+            }
             Msg::Edit(d) => {
                 let callback = self.link.callback(Msg::Response);
                 let html = html! { <DeviceEdit device=d callback=callback.clone() /> };
                 self.props.callback.emit(Route::Edit(html));
                 show();
-            },
+            }
             Msg::New => {
                 let callback = self.link.callback(Msg::Response);
                 let html = html! { <CreateDevice callback=callback.clone() /> };

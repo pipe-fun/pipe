@@ -5,7 +5,7 @@ use crate::components::{
 
 use crate::routes::console::{
     task::view::TaskView,
-    device::view::DeviceView
+    device::view::DeviceView,
 };
 
 use yew::{ComponentLink, Component, Html};
@@ -16,12 +16,12 @@ pub enum Route {
     None,
     Edit(Html),
     New(Html),
-    Execute(Html)
+    Execute(Html),
 }
 
 pub struct Console {
     route: Route,
-    link: ComponentLink<Self>
+    link: ComponentLink<Self>,
 }
 
 pub enum Msg {

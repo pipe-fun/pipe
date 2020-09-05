@@ -1,12 +1,12 @@
 use yew::{
     ComponentLink,
     Component,
-    Html
+    Html,
 };
 
 use crate::types::auth::{
     LoginInfo,
-    UserInfo
+    UserInfo,
 };
 
 use yew::prelude::*;

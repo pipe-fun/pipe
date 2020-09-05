@@ -1,6 +1,6 @@
 use crate::types::auth::{
     LoginInfo,
-    UserInfo
+    UserInfo,
 };
 
 use yew::callback::Callback;

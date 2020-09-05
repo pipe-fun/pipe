@@ -124,6 +124,7 @@ impl Component for TaskView {
         let tbody = self.tasks.iter().map(|t| {
             let t_c1 = t.clone();
             let t_c2 = t.clone();
+
             html! {
                 <tr>
                     <td>
@@ -134,9 +135,9 @@ impl Component for TaskView {
 
                     <td>{ t.succeed_count }</td>
                     <td>{ t.failed_count }</td>
+                    <td>{ t.execute_time }</td>
                     <td>{ t.last_executed }</td>
                     <td>{ if t.active { "激活" } else { "禁用" } }</td>
-                    <td>{ "10 小时后" }</td>
 
                     <td>
                         <button class="my_button" onclick=self.link.callback(move |_| Msg::Edit(t_c1.clone()))>
@@ -161,9 +162,9 @@ impl Component for TaskView {
                                 <th>{ "任务" }</th>
                                 <th>{ "成功执行次数" }</th>
                                 <th>{ "失败次数" }</th>
+                                <th>{ "执行时间" }</th>
                                 <th>{ "上次成功时间" }</th>
                                 <th>{ "状态" }</th>
-                                <th>{ "预计下次执行时间" }</th>
                                 <th>{ "操作" }</th>
                             </tr>
                         </thead>

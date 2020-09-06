@@ -5,6 +5,13 @@ pub struct LoginInfo {
 }
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
+pub struct RegisterInfo {
+    pub user_name: String,
+    pub user_password: String,
+    pub user_email: String,
+}
+
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct UserInfo {
     pub authorized: bool,
     pub user_name: String,

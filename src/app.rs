@@ -14,6 +14,7 @@ use crate::routes::{
     console::view::Console,
     login::Login,
     logout::Logout,
+    register::Register,
     AppRoute,
     fix_fragment_routes,
 };
@@ -108,9 +109,10 @@ impl Component for App {
                 {
                     if let Some(route) = &self.current_route {
                         match route {
-                            AppRoute::Login => html!{<Login callback=callback_login />},
-                            AppRoute::Console => html!{<Console />},
-                            AppRoute::Logout => html!{<Logout callback=callback_logout />},
+                            AppRoute::Login => html! {<Login callback=callback_login />},
+                            AppRoute::Console => html! {<Console />},
+                            AppRoute::Logout => html! {<Logout callback=callback_logout />},
+                            AppRoute::Register => html! {<Register />}
                         }
                     } else {
                         html! { "No found" }
@@ -141,6 +143,7 @@ impl App {
                 AppRoute::Login => {}
                 AppRoute::Console => {}
                 AppRoute::Logout => {}
+                AppRoute::Register => {}
             }
         }
     }

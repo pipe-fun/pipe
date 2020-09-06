@@ -37,6 +37,7 @@ pub enum Msg {
     Ignore,
     UpdateUserName(String),
     UpdatePassword(String),
+    Register,
 }
 
 #[derive(PartialEq, Properties, Clone, Default)]
@@ -84,6 +85,7 @@ impl Component for Login {
             Msg::UpdateUserName(value) => self.request.user_name = value,
             Msg::UpdatePassword(value) => self.request.user_password = value,
             Msg::Ignore => {}
+            Msg::Register => self.router_agent.send(ChangeRoute(AppRoute::Register.into())),
         }
         true
     }
@@ -105,6 +107,8 @@ impl Component for Login {
         let oninput_password = self
             .link
             .callback(|ev: InputData| Msg::UpdatePassword(ev.value));
+
+        let register = self.link.callback(|_| Msg::Register);
 
         html! {
             <>
@@ -139,7 +143,7 @@ impl Component for Login {
 
                         <div class="text-right">
                             <button type="submit" class="btn btn-default">{ "登录" }</button>
-                            <button type="submit" class="btn btn-default">{ "注册" }</button>
+                            <button type="submit" class="btn btn-default" onclick=register>{ "注册" }</button>
                         </div>
                     </form>
                 </div>

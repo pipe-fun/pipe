@@ -1,11 +1,9 @@
-use crate::types::auth::{
-    LoginInfo,
-    UserInfo,
-};
+use crate::types::auth::{LoginInfo, UserInfo, RegisterInfo};
 
 use yew::callback::Callback;
 use yew::services::fetch::FetchTask;
 use status_protoc::status::user::login::LoginStatus;
+use status_protoc::status::user::register::RegisterStatus;
 use crate::error::Error;
 use crate::services::requests::Requests;
 
@@ -45,18 +43,18 @@ impl Auth {
         )
     }
 
-    // /// Register a new user
-    // pub fn register(
-    //     &mut self,
-    //     register_info: RegisterInfo,
-    //     callback: Callback<Result<UserInfoWrapper, Error>>,
-    // ) -> FetchTask {
-    //     self.requests.post::<RegisterInfoWrapper, UserInfoWrapper>(
-    //         "/user/register".to_string(),
-    //         register_info,
-    //         callback,
-    //     )
-    // }
+    /// Register a new user
+    pub fn register(
+        &mut self,
+        register_info: RegisterInfo,
+        callback: Callback<Result<RegisterStatus, Error>>,
+    ) -> FetchTask {
+        self.requests.post::<RegisterInfo, RegisterStatus>(
+            format!("/user/register"),
+            register_info,
+            callback,
+        )
+    }
 
     pub fn authorize(
         &mut self,

@@ -11,7 +11,7 @@ use crate::types::auth::{
 
 use yew::prelude::*;
 use yew::services::fetch::FetchTask;
-use status_protoc::status::user::login::LoginStatus;
+use status_protoc::status::user::login::{LoginStatus, _LoginStatus};
 use status_protoc::my_trait::StatusTrait;
 use yew_router::agent::RouteAgent;
 use yew_router::agent::RouteRequest::ChangeRoute;
@@ -28,6 +28,7 @@ pub struct Login {
     task: Option<FetchTask>,
     props: Props,
     router_agent: Box<dyn Bridge<RouteAgent>>,
+    tip: Html,
     link: ComponentLink<Self>,
 }
 
@@ -59,6 +60,7 @@ impl Component for Login {
             task: None,
             props,
             router_agent: RouteAgent::bridge(link.callback(|_| Msg::Ignore)),
+            tip: html! { <></> },
             link,
         }
     }
@@ -72,10 +74,18 @@ impl Component for Login {
             Msg::Response(Ok(response)) => {
                 self.error = None;
                 self.task = None;
-                if response.status_code() == 0 {
-                    let info = UserInfo::new(&response.get_user_name());
-                    self.props.callback.emit(info);
-                    self.router_agent.send(ChangeRoute(AppRoute::Console.into()));
+                match response.status() {
+                    _LoginStatus::LoginSuccessfully => {
+                        let info = UserInfo::new(&response.get_user_name());
+                        self.props.callback.emit(info);
+                        self.router_agent.send(ChangeRoute(AppRoute::Console.into()));
+                    }
+                    _LoginStatus::UserNameOrPasswordWrongOrNoActive => {
+                        self.tip = html! { <p class="alert alert-danger">{ "账号密码错误，或者未激活" }</p> }
+                    }
+                    _LoginStatus::DbAPIError => {
+                        self.tip = html! { <p class="alert alert-danger">{ "数据库错误，请联系管理员" }</p> }
+                    }
                 }
             }
             Msg::Response(Err(err)) => {
@@ -116,7 +126,7 @@ impl Component for Login {
                 <div class="container">
                     <form onsubmit=onsubmit>
                         <h1>{ "Pipe" }<sup>{ "alpha" }</sup></h1>
-
+                        { self.tip.clone() }
                         <div class="form-group ">
                             <label class="control-label" for="email">{ "用户名" }</label>
                             <input type="name" class="form-control"

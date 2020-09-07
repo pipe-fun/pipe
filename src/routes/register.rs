@@ -47,8 +47,8 @@ impl Component for Register {
 
     fn update(&mut self, msg: Self::Message) -> bool {
         match msg {
-            Msg::Response(Ok(r)) => {
-                match r.status() {
+            Msg::Response(Ok(response)) => {
+                match response.status() {
                     _RegisterStatus::UserNameHasExisted => {
                         self.tip = html! { <p class="alert alert-danger">{ "用户名已存在" }</p> }
                     }

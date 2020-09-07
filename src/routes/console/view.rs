@@ -10,7 +10,7 @@ use crate::routes::console::{
 
 use yew::{ComponentLink, Component, Html};
 use yew::prelude::*;
-use crate::routes::console::from_js::addEditEvent;
+use crate::routes::from_js::addEditEvent;
 
 pub enum Route {
     None,

@@ -44,3 +44,38 @@ function deleteBackDrop() {
     if (backdrop === null) return;
     document.body.removeChild(backdrop);
 }
+
+function login_btn_disable() {
+    let btn = document.getElementById("login_btn");
+    btn.disabled = true;
+    btn.innerText = "登录中";
+}
+
+function login_btn_enable() {
+    let btn = document.getElementById("login_btn");
+    btn.disabled = false;
+    btn.innerText = "登录";
+}
+
+function register_btn_disable() {
+    let btn = document.getElementById("register_btn");
+    btn.disabled = true;
+    btn.innerText = "注册中";
+}
+
+function register_btn_enable() {
+    let btn = document.getElementById("register_btn");
+    btn.disabled = false;
+    btn.innerText = "注册";
+}
+function active_btn_disable() {
+    let btn = document.getElementById("active_btn");
+    btn.disabled = true;
+    btn.innerText = "激活中";
+}
+
+function active_btn_enable() {
+    let btn = document.getElementById("active_btn");
+    btn.disabled = false;
+    btn.innerText = "激活";
+}

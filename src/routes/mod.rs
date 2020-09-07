@@ -1,7 +1,9 @@
 pub mod login;
 pub mod logout;
 pub mod register;
+pub mod active;
 pub mod console;
+pub mod from_js;
 
 use yew_router::prelude::*;
 
@@ -14,6 +16,8 @@ pub enum AppRoute {
     Console,
     #[to = "/#/register"]
     Register,
+    #[to = "/#/active"]
+    Active,
     #[to = "/#"]
     Login,
 }

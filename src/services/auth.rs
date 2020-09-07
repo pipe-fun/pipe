@@ -6,6 +6,7 @@ use status_protoc::status::user::login::LoginStatus;
 use status_protoc::status::user::register::RegisterStatus;
 use crate::error::Error;
 use crate::services::requests::Requests;
+use status_protoc::status::user::active::ActiveStatus;
 
 /// Apis for authentication
 #[derive(Default, Debug)]
@@ -39,7 +40,7 @@ impl Auth {
     ) -> FetchTask {
         self.requests.get::<()>(
             format!("/user/logout"),
-            callback
+            callback,
         )
     }
 
@@ -62,6 +63,17 @@ impl Auth {
     ) -> FetchTask {
         self.requests.get::<UserInfo>(
             format!("/user/auth"),
+            callback,
+        )
+    }
+
+    pub fn active(
+        &mut self,
+        code: String,
+        callback: Callback<Result<ActiveStatus, Error>>,
+    ) -> FetchTask {
+        self.requests.get::<ActiveStatus>(
+            format!("/user/active/{}", code),
             callback,
         )
     }

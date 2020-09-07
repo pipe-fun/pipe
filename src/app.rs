@@ -15,6 +15,7 @@ use crate::routes::{
     login::Login,
     logout::Logout,
     register::Register,
+    active::Active,
     AppRoute,
     fix_fragment_routes,
 };
@@ -112,7 +113,8 @@ impl Component for App {
                             AppRoute::Login => html! {<Login callback=callback_login />},
                             AppRoute::Console => html! {<Console />},
                             AppRoute::Logout => html! {<Logout callback=callback_logout />},
-                            AppRoute::Register => html! {<Register />}
+                            AppRoute::Register => html! {<Register />},
+                            AppRoute::Active => html! {<Active />}
                         }
                     } else {
                         html! { "No found" }
@@ -144,6 +146,7 @@ impl App {
                 AppRoute::Console => {}
                 AppRoute::Logout => {}
                 AppRoute::Register => {}
+                AppRoute::Active => {}
             }
         }
     }

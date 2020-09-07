@@ -25,7 +25,7 @@ impl Component for Footer {
                 <div class="container">
                     <p class="text-center">
                         <a href="https://github.com/pipe-fun" target="_blank">
-                        { "a Spxg 's project" }
+                        { "Spxg 's project" }
                         </a>
                     </p>
                 </div>

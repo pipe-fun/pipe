@@ -19,6 +19,7 @@ use crate::error::Error;
 use crate::services::auth::Auth;
 use crate::routes::AppRoute;
 use crate::components::footer::Footer;
+use crate::routes::from_js::{login_btn_disable, login_btn_enable};
 
 pub struct Login {
     auth: Auth,
@@ -68,6 +69,7 @@ impl Component for Login {
     fn update(&mut self, msg: Self::Message) -> bool {
         match msg {
             Msg::Request => {
+                login_btn_disable();
                 let request = self.request.clone();
                 self.task = Some(self.auth.login(request, self.response.clone()))
             }
@@ -81,16 +83,18 @@ impl Component for Login {
                         self.router_agent.send(ChangeRoute(AppRoute::Console.into()));
                     }
                     _LoginStatus::UserNameOrPasswordWrongOrNoActive => {
-                        self.tip = html! { <p class="alert alert-danger">{ "账号密码错误，或者未激活" }</p> }
+                        self.tip = html! { <p class="alert alert-danger">{ "账号密码错误，或者未激活" }</p> };
                     }
                     _LoginStatus::DbAPIError => {
-                        self.tip = html! { <p class="alert alert-danger">{ "数据库错误，请联系管理员" }</p> }
+                        self.tip = html! { <p class="alert alert-danger">{ "数据库错误，请联系管理员" }</p> };
                     }
                 }
+                login_btn_enable();
             }
             Msg::Response(Err(err)) => {
                 self.error = Some(err);
                 self.task = None;
+                login_btn_enable();
             }
             Msg::UpdateUserName(value) => self.request.user_name = value,
             Msg::UpdatePassword(value) => self.request.user_password = value,
@@ -128,7 +132,7 @@ impl Component for Login {
                         <h1>{ "Pipe" }<sup>{ "alpha" }</sup></h1>
                         { self.tip.clone() }
                         <div class="form-group ">
-                            <label class="control-label" for="email">{ "用户名" }</label>
+                            <label class="control-label" for="name">{ "用户名" }</label>
                             <input type="name" class="form-control"
                             name="name"
                             id="name"
@@ -152,7 +156,7 @@ impl Component for Login {
                         </div>
 
                         <div class="text-right">
-                            <button type="submit" class="btn btn-default">{ "登录" }</button>
+                            <button type="submit" id="login_btn" class="btn btn-default">{ "登录" }</button>
                             <button type="submit" class="btn btn-default" onclick=register>{ "注册" }</button>
                         </div>
                     </form>

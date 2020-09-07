@@ -8,10 +8,14 @@ use yew::prelude::*;
 use yew::services::fetch::FetchTask;
 use status_protoc::status::user::register::{RegisterStatus, _RegisterStatus};
 use status_protoc::my_trait::StatusTrait;
+use yew_router::agent::RouteAgent;
+use yew_router::agent::RouteRequest::ChangeRoute;
 use crate::error::Error;
 use crate::services::auth::Auth;
 use crate::components::footer::Footer;
 use crate::types::auth::RegisterInfo;
+use crate::routes::AppRoute;
+use crate::routes::from_js::{register_btn_enable, register_btn_disable};
 
 pub struct Register {
     auth: Auth,
@@ -19,6 +23,7 @@ pub struct Register {
     response: Callback<Result<RegisterStatus, Error>>,
     task: Option<FetchTask>,
     tip: Html,
+    router_agent: Box<dyn Bridge<RouteAgent>>,
     link: ComponentLink<Self>,
 }
 
@@ -28,6 +33,7 @@ pub enum Msg {
     UpdateUserName(String),
     UpdateEmail(String),
     UpdatePassword(String),
+    Ignore,
 }
 
 impl Component for Register {
@@ -41,6 +47,7 @@ impl Component for Register {
             response: link.callback(Msg::Response),
             task: None,
             tip: html! { <p class="alert alert-info">{ "注册Pipe (pipe.unsafe.me)" }</p> },
+            router_agent: RouteAgent::bridge(link.callback(|_| Msg::Ignore)),
             link,
         }
     }
@@ -50,37 +57,39 @@ impl Component for Register {
             Msg::Response(Ok(response)) => {
                 match response.status() {
                     _RegisterStatus::UserNameHasExisted => {
-                        self.tip = html! { <p class="alert alert-danger">{ "用户名已存在" }</p> }
+                        self.tip = html! { <p class="alert alert-danger">{ "用户名已存在" }</p> };
                     }
                     _RegisterStatus::EmailHasExisted => {
-                        self.tip = html! { <p class="alert alert-danger">{ "邮件已存在" }</p> }
+                        self.tip = html! { <p class="alert alert-danger">{ "邮件已存在" }</p> };
                     }
                     _RegisterStatus::InvalidEmailAddress => {
-                        self.tip = html! { <p class="alert alert-danger">{ "邮件格式错误" }</p> }
+                        self.tip = html! { <p class="alert alert-danger">{ "邮件格式错误" }</p> };
                     }
                     _RegisterStatus::UserNameTooShort => {
-                        self.tip = html! { <p class="alert alert-danger">{ "用户名太短" }</p> }
+                        self.tip = html! { <p class="alert alert-danger">{ "用户名太短" }</p> };
                     }
                     _RegisterStatus::PasswordTooShort => {
-                        self.tip = html! { <p class="alert alert-danger">{ "密码太短" }</p> }
+                        self.tip = html! { <p class="alert alert-danger">{ "密码太短" }</p> };
                     }
                     _RegisterStatus::DbAPIError => {
-                        self.tip = html! { <p class="alert alert-danger">{ "数据库错误，请联系管理员" }</p> }
+                        self.tip = html! { <p class="alert alert-danger">{ "数据库错误，请联系管理员" }</p> };
                     }
                     _RegisterStatus::SendEmailError => {
-                        self.tip = html! { <p class="alert alert-danger">{ "邮件发送错误，请联系管理员" }</p> }
+                        self.tip = html! { <p class="alert alert-danger">{ "邮件发送错误，请联系管理员" }</p> };
                     }
-                    _RegisterStatus::RegisterSuccessfully => {
-                        self.tip = html! { <p class="alert alert-success">{ "注册成功，检查邮箱激活" }</p> };
-                        self.request = RegisterInfo::default();
-                    }
+                    _RegisterStatus::RegisterSuccessfully => self.router_agent.send(ChangeRoute(AppRoute::Active.into()))
                 }
+                register_btn_enable();
             }
             Msg::Response(Err(_)) => (),
             Msg::UpdateUserName(name) => self.request.user_name = name,
             Msg::UpdateEmail(email) => self.request.user_email = email,
             Msg::UpdatePassword(password) => self.request.user_password = password,
-            Msg::Request => self.task = Some(self.auth.register(self.request.clone(), self.response.clone())),
+            Msg::Request => {
+                register_btn_disable();
+                self.task = Some(self.auth.register(self.request.clone(), self.response.clone()))
+            },
+            Msg::Ignore => ()
         }
         true
     }
@@ -113,7 +122,7 @@ impl Component for Register {
                         <h1>{ "Pipe" }<sup>{ "alpha" }</sup></h1>
                         { self.tip.clone() }
                         <div class="form-group ">
-                            <label class="control-label" for="email">{ "用户名" }</label>
+                            <label class="control-label" for="name">{ "用户名" }</label>
                             <input type="name" class="form-control"
                             name="name"
                             id="name"
@@ -126,7 +135,7 @@ impl Component for Register {
 
                         <div class="form-group ">
                             <label class="control-label" for="email">{ "邮箱" }</label>
-                            <input type="name" class="form-control"
+                            <input type="email" class="form-control"
                             name="email"
                             id="email"
                             placeholder="请输入 邮箱"
@@ -149,7 +158,7 @@ impl Component for Register {
                         </div>
 
                         <div class="text-right">
-                            <button type="submit" class="btn btn-default">{ "提交" }</button>
+                            <button type="submit" id="register_btn" class="btn btn-default">{ "注册" }</button>
                         </div>
                     </form>
                 </div>

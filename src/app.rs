@@ -12,10 +12,11 @@ use yew::{
 
 use crate::routes::{
     console::view::Console,
-    login::Login,
-    logout::Logout,
-    register::Register,
-    active::Active,
+    user::login::Login,
+    user::logout::Logout,
+    user::register::Register,
+    user::active::Active,
+    user::forget::Forget,
     AppRoute,
     fix_fragment_routes,
 };
@@ -114,7 +115,8 @@ impl Component for App {
                             AppRoute::Console => html! {<Console />},
                             AppRoute::Logout => html! {<Logout callback=callback_logout />},
                             AppRoute::Register => html! {<Register />},
-                            AppRoute::Active => html! {<Active />}
+                            AppRoute::Active => html! {<Active />},
+                            AppRoute::Forget => html! {<Forget />}
                         }
                     } else {
                         html! { "No found" }
@@ -147,6 +149,7 @@ impl App {
                 AppRoute::Logout => {}
                 AppRoute::Register => {}
                 AppRoute::Active => {}
+                AppRoute::Forget => {}
             }
         }
     }

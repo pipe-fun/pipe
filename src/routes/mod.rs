@@ -1,7 +1,4 @@
-pub mod login;
-pub mod logout;
-pub mod register;
-pub mod active;
+pub mod user;
 pub mod console;
 pub mod from_js;
 
@@ -18,6 +15,8 @@ pub enum AppRoute {
     Register,
     #[to = "/#/active"]
     Active,
+    #[to = "/#/forget"]
+    Forget,
     #[to = "/#"]
     Login,
 }

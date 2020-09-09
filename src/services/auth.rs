@@ -1,12 +1,14 @@
-use crate::types::auth::{LoginInfo, UserInfo, RegisterInfo};
+use crate::types::auth::{LoginInfo, UserInfo, RegisterInfo, NewPassword};
 
 use yew::callback::Callback;
 use yew::services::fetch::FetchTask;
 use status_protoc::status::user::login::LoginStatus;
 use status_protoc::status::user::register::RegisterStatus;
+use status_protoc::status::user::active::ActiveStatus;
+use status_protoc::status::user::check::CheckStatus;
+use status_protoc::status::user::change::ChangeStatus;
 use crate::error::Error;
 use crate::services::requests::Requests;
-use status_protoc::status::user::active::ActiveStatus;
 
 /// Apis for authentication
 #[derive(Default, Debug)]
@@ -75,6 +77,29 @@ impl Auth {
         self.requests.get::<ActiveStatus>(
             format!("/user/active/{}", code),
             callback,
+        )
+    }
+
+    pub fn send_check_code(
+        &mut self,
+        email: String,
+        callback: Callback<Result<CheckStatus, Error>>
+    ) -> FetchTask {
+        self.requests.get::<CheckStatus>(
+            format!("/user/send_code/{}", email),
+            callback
+        )
+    }
+
+    pub fn reset_password(
+        &mut self,
+        new: NewPassword,
+        callback: Callback<Result<ChangeStatus, Error>>
+    ) -> FetchTask {
+        self.requests.post::<NewPassword, ChangeStatus>(
+            format!("/user/update_password"),
+            new,
+            callback
         )
     }
 }

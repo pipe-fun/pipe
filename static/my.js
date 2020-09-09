@@ -68,6 +68,7 @@ function register_btn_enable() {
     btn.disabled = false;
     btn.innerText = "注册";
 }
+
 function active_btn_disable() {
     let btn = document.getElementById("active_btn");
     btn.disabled = true;
@@ -78,4 +79,28 @@ function active_btn_enable() {
     let btn = document.getElementById("active_btn");
     btn.disabled = false;
     btn.innerText = "激活";
+}
+
+function send_btn_disable() {
+    let btn = document.getElementById("send_btn");
+    btn.disabled = true;
+    btn.innerText = "发送中";
+}
+
+function send_btn_enable() {
+    let btn = document.getElementById("send_btn");
+    btn.disabled = false;
+    btn.innerText = "发送";
+}
+
+function change_btn_disable() {
+    let btn = document.getElementById("change_btn");
+    btn.disabled = true;
+    btn.innerText = "修改中";
+}
+
+function change_btn_enable() {
+    let btn = document.getElementById("change_btn");
+    btn.disabled = false;
+    btn.innerText = "修改";
 }

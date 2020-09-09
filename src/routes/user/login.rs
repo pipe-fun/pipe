@@ -133,7 +133,7 @@ impl Component for Login {
                         { self.tip.clone() }
                         <div class="form-group ">
                             <label class="control-label" for="name">{ "用户名" }</label>
-                            <input type="name" class="form-control"
+                            <input type="text" class="form-control"
                             name="name"
                             id="name"
                             placeholder="请输入 用户名"
@@ -156,6 +156,8 @@ impl Component for Login {
                         </div>
 
                         <div class="text-right">
+                            <p><a href="/#/forget">{ "忘记密码?" }</a></p>
+                            <p><a href="/#/active">{ "未激活账户?" }</a></p>
                             <button type="submit" id="login_btn" class="btn btn-default">{ "登录" }</button>
                             <button type="submit" class="btn btn-default" onclick=register>{ "注册" }</button>
                         </div>

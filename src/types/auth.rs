@@ -12,6 +12,12 @@ pub struct RegisterInfo {
 }
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
+pub struct NewPassword {
+    pub code: String,
+    pub new_password: String,
+}
+
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct UserInfo {
     pub authorized: bool,
     pub user_name: String,

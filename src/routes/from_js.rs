@@ -12,4 +12,8 @@ extern "C" {
     pub fn register_btn_enable();
     pub fn active_btn_disable();
     pub fn active_btn_enable();
+    pub fn send_btn_disable();
+    pub fn send_btn_enable();
+    pub fn change_btn_disable();
+    pub fn change_btn_enable();
 }

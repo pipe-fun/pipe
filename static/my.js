@@ -2,7 +2,6 @@ function addEditEvent() {
     let edit = document.getElementById("modal_load");
 
     edit.addEventListener('click', function (e) {
-            console.log(e)
             if (e.target.id === "modal_load") {
                 edit.classList.remove('in');
                 edit.setAttribute("aria-hidden", "true");

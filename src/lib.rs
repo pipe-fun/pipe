@@ -15,6 +15,5 @@ mod components;
 
 #[wasm_bindgen(start)]
 pub fn run_app() {
-    wasm_logger::init(wasm_logger::Config::default());
     yew::start_app::<App>();
 }

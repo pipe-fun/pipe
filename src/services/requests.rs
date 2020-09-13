@@ -18,7 +18,6 @@ use yew::services::fetch::{
     Credentials,
 };
 
-use log::debug;
 use yew::callback::Callback;
 use dotenv_codegen::dotenv;
 use crate::error::Error;
@@ -47,7 +46,6 @@ impl Requests {
     {
         let handler = move |response: Response<Text>| {
             if let (meta, Ok(data)) = response.into_parts() {
-                debug!("Response: {:?}", data);
                 if meta.status.is_success() {
                     let data: Result<T, _> = serde_json::from_str(&data);
                     if let Ok(data) = data {
@@ -84,7 +82,6 @@ impl Requests {
             .header("Content-Type", "application/json");
 
         let request = builder.body(body).unwrap();
-        debug!("Request: {:?}", request);
 
         let mut options = FetchOptions::default();
         options.credentials = Some(Credentials::Include);

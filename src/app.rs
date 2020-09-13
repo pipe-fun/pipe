@@ -24,7 +24,6 @@ use crate::routes::{
 use yew::services::fetch::FetchTask;
 use yew_router::prelude::*;
 use yew_router::agent::RouteRequest::ChangeRoute;
-use log::debug;
 use crate::services::auth::Auth;
 use crate::types::auth::UserInfo;
 use crate::error::Error;
@@ -57,7 +56,6 @@ impl Component for App {
         let route_service: RouteService = RouteService::new();
         let mut route = route_service.get_route();
         fix_fragment_routes(&mut route);
-        debug!("Route {:?}", route);
 
         App {
             auth: Auth::new(),

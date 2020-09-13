@@ -13,7 +13,6 @@ use crate::types::task::{
 use status_protoc::status::console::task::TaskStatus;
 use yew::prelude::*;
 use yew::services::fetch::FetchTask;
-use log::debug;
 use std::str::FromStr;
 use crate::services::device::DeviceRequest;
 use crate::types::device::Device;
@@ -84,7 +83,6 @@ impl Component for CreateTask {
                 self.task = Some(self.tr.read(self.read_task_response.clone()));
             }
             Msg::Request => {
-                debug!("{:?}", self.request);
                 self.task = Some(self.tr.create(self.request.clone(), self.response.clone()))
             }
             Msg::UpdateTaskName(n) => self.request.edit_name(&n),

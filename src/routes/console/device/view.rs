@@ -1,7 +1,8 @@
-use yew::{Callback,
-          Component,
-          ComponentLink,
-          Html,
+use yew::{
+    Callback,
+    Component,
+    ComponentLink,
+    Html,
 };
 
 use super::{

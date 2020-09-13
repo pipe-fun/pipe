@@ -20,10 +20,11 @@ use yew::services::fetch::{
 
 use log::debug;
 use yew::callback::Callback;
+use dotenv_codegen::dotenv;
 use crate::error::Error;
 use crate::types::ErrorInfo;
 
-const API_ROOT: &str = "http://127.0.0.1:8888";
+const API_ROOT: &str = dotenv!("PIPE_API");
 
 /// Http request
 #[derive(Default, Debug)]

@@ -156,7 +156,7 @@ impl Component for Login {
                         </div>
 
                         <div class="text-right">
-                            <p><a href="/#/forget">{ "忘记密码?" }</a></p>
+                            <p><a href="/#/forget">{ "重置密码?" }</a></p>
                             <p><a href="/#/active">{ "未激活账户?" }</a></p>
                             <button type="submit" id="login_btn" class="btn btn-default">{ "登录" }</button>
                             <button type="submit" class="btn btn-default" onclick=register>{ "注册" }</button>

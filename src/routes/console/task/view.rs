@@ -74,12 +74,19 @@ impl Component for TaskView {
             Msg::Response(info) => {
                 unShow();
                 deleteBackDrop();
-                self.tasks = info.0;
+                let mut tasks = info.0;
+                let token = info.1;
+                tasks.sort_by_key(|t| t.id);
+
+                self.tasks = tasks;
                 self.route = Route::None;
-                self.task = Some(self.tr.reload(&info.1, self.reload_response.clone()));
+                self.task = Some(self.tr.reload(&token, self.reload_response.clone()));
             }
             Msg::ResponseFirst(Ok(ts)) => {
-                self.tasks = ts;
+                let mut tasks = ts;
+                tasks.sort_by_key(|t| t.id);
+
+                self.tasks = tasks;
                 self.route = Route::None;
             }
             Msg::ExecuteResponse(Ok(result)) => {

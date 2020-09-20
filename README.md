@@ -49,4 +49,6 @@
 
 ## 示例
 
+动图有点大，建议下载完看
+
 <img src="screenshots/pipe.gif" align=left alt="Pipe" style="zoom:50%;" />

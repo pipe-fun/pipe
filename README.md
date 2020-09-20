@@ -14,6 +14,8 @@
 
 ## 实现方案
 
+* [Pipe](https://github.com/pipe-fun/pipe) 使用Yew + Wasm
+
 * [DB-API](https://github.com/pipe-fun/db-api) 使用Actix-Web + Sqlx + PostgreSql实现（还有个分支使用了Rocket + Diesel + MySql）
 * [WEB-API](https://github.com/pipe-fun/web-api) 使用Rocket实现
 * [Core](https://github.com/pipe-fun/core) 使用async-std实现 

@@ -17,6 +17,8 @@ pub enum AppRoute {
     Active,
     #[to = "/#/forget"]
     Forget,
+    #[to = "/#/help"]
+    Help,
     #[to = "/#"]
     Login,
 }

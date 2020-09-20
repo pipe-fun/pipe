@@ -24,9 +24,12 @@ use crate::routes::{
 use yew::services::fetch::FetchTask;
 use yew_router::prelude::*;
 use yew_router::agent::RouteRequest::ChangeRoute;
+use dotenv_codegen::dotenv;
 use crate::services::auth::Auth;
 use crate::types::auth::UserInfo;
 use crate::error::Error;
+
+const CORE_API: &str = dotenv!("CORE_API");
 
 /// The root app component
 pub struct App {
@@ -114,7 +117,15 @@ impl Component for App {
                             AppRoute::Logout => html! {<Logout callback=callback_logout />},
                             AppRoute::Register => html! {<Register />},
                             AppRoute::Active => html! {<Active />},
-                            AppRoute::Forget => html! {<Forget />}
+                            AppRoute::Forget => html! {<Forget />},
+                            AppRoute::Help => html! { <>
+                                <h1 class="text-center">{ "Pipe" }<sup>{ "alpha" }</sup></h1>
+                                <h2 class="text-center">{ format!("核心地址: {}", CORE_API) }</h2>
+                                <h3 class="text-center">{ "1) 设备TCP连接到核心" }</h3>
+                                <h3 class="text-center">{ "2) 发送设备Token" }</h3>
+                                <h3 class="text-center">{ "3) 检查连接状态" }</h3>
+                                <h3 class="text-center">{ "4) 等待任务执行" }</h3>
+                            </>}
                         }
                     } else {
                         html! { "No found" }
@@ -142,12 +153,15 @@ impl App {
                     self.router_agent.send(ChangeRoute(AppRoute::Login.into())),
                 AppRoute::Logout if self.current_user.is_none() =>
                     self.router_agent.send(ChangeRoute(AppRoute::Login.into())),
+                AppRoute::Help if self.current_user.is_none() =>
+                    self.router_agent.send(ChangeRoute(AppRoute::Login.into())),
                 AppRoute::Login => {}
                 AppRoute::Console => {}
                 AppRoute::Logout => {}
                 AppRoute::Register => {}
                 AppRoute::Active => {}
                 AppRoute::Forget => {}
+                AppRoute::Help => {}
             }
         }
     }

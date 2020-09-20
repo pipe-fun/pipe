@@ -28,9 +28,9 @@ impl Component for Header {
                 <div class="container">
                     <h1 class="text-center">{ "Pipe" }<sup>{ "alpha" }</sup></h1>
                         <div class="buttons">
-                            <RouterAnchor<AppRoute> route=AppRoute::Console
+                            <RouterAnchor<AppRoute> route=AppRoute::Help
                             classes="btn btn-default pull-left">
-                            { "首页" }
+                            { "帮助" }
                             </RouterAnchor<AppRoute>>
 
                             <RouterAnchor<AppRoute> route=AppRoute::Logout

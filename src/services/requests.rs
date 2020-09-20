@@ -23,7 +23,7 @@ use dotenv_codegen::dotenv;
 use crate::error::Error;
 use crate::types::ErrorInfo;
 
-const API_ROOT: &str = dotenv!("PIPE_API");
+const PIPE_API: &str = dotenv!("PIPE_API");
 
 /// Http request
 #[derive(Default, Debug)]
@@ -75,7 +75,7 @@ impl Requests {
             }
         };
 
-        let url = format!("{}{}", API_ROOT, url);
+        let url = format!("{}{}", PIPE_API, url);
         let builder = Request::builder()
             .method(method)
             .uri(url.as_str())

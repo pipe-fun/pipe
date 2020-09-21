@@ -28,7 +28,7 @@
 | :-----------------------------: | :-------------------------------: |
 | ![login](screenshots/login.png) | ![forget](screenshots/forget.png) |
 
-|              Active               |           Sign Up(Desktop)            |
+|              Active               |           Sign Up            |
 | :-------------------------------: | :-----------------------------------: |
 | ![active](screenshots/active.png) | ![register](screenshots/register.png) |
 
